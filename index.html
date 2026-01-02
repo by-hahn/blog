@@ -1,1 +1,505 @@
-blog main page
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="B. Hahn's career journey across development, research, and learning." />
+    <meta property="og:title" content="B. Hahn (by-hahn)'s Personal Blog" />
+    <meta property="og:description" content="B. Hahn's career journey across development, research, and learning." />
+    <meta property="og:type" content="website" />
+    <title>by-hahn's Personal Blog</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Responsive Design Breakpoints:
+    - Desktop: > 900px (2-column layout with sidebar)
+    - Tablet: 600px - 900px (1-column layout, sidebar hidden)
+    - Mobile: <= 600px (1-column layout, mobile menu visible) -->
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1>by-hahn — Blog</h1>
+                <p class="lead">Byoungyoon Hahn's Blog.</p>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        </header>
+
+        <nav id="nav-menu">
+            <a class="btn" href="./activities/index.html">Activities</a>
+            <a class="btn" href="./goals/index.html">Goals</a>
+            <a class="btn" href="./paper-reviews/index.html">Paper Reviews</a>
+            <a class="btn" href="./posts/index.html">Posts</a>
+            <a class="btn" href="./projects/index.html">Projects</a>
+            <a class="btn" href="./study-notes/index.html">Study Notes</a>
+            <a class="btn" href="./guestbook/index.html">Guestbook</a>
+            <a class="btn" href="./certifications/index.html">Certifications</a>
+        </nav>
+
+        <div class="grid">
+            <main>
+                <div class="card">
+                    <h2 style="margin:0 0 8px">Recent posts</h2>
+                    <div id="recent">
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:14px">
+                    <h3 style="margin:0 0 8px">By category</h3>
+                    <div id="categories">
+                        <div class="skeleton"></div>
+                        <div class="skeleton"></div>
+                    </div>
+                </div>
+            </main>
+
+            <aside>
+                <div class="card">
+                    <h3 style="margin:0 0 8px">About</h3>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Making a blog site that loads Markdown posts from a GitHub repository using the
+                        YYYY-MM-DD~title.md format.</p>
+                </div>
+
+                <div class="card" style="margin-top:12px" id="quicklinks-card">
+                    <h4 style="margin:0 0 8px">Quick links</h4>
+                    <div class="category-list" id="quicklinks">
+                        <a class="cat" href="./activities/index.html">Activities</a>
+                        <a class="cat" href="./goals/index.html">Goals</a>
+                        <a class="cat" href="./posts/index.html">Posts</a>
+                        <a class="cat" href="./projects/index.html">Projects</a>
+                        <a class="cat" href="./study-notes/index.html">Study Notes</a>
+                        <a class="cat" href="./paper-reviews/index.html">Paper Reviews</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Menu (shown on screens <= 600px) -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <h2>Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">×</button>
+            </div>
+            <div class="mobile-menu-content">
+                <div class="card">
+                    <h4 style="margin:0 0 8px">About</h4>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Making a blog site that loads Markdown posts from a GitHub repository using the
+                        YYYY-MM-DD~title.md format.</p>
+                </div>
+                <ul style="margin-top:16px;">
+                    <li><a href="./activities/index.html">Activities</a></li>
+                    <li><a href="./goals/index.html">Goals</a></li>
+                    <li><a href="./paper-reviews/index.html">Paper Reviews</a></li>
+                    <li><a href="./posts/index.html">Posts</a></li>
+                    <li><a href="./projects/index.html">Projects</a></li>
+                    <li><a href="./study-notes/index.html">Study Notes</a></li>
+                    <li><a href="./guestbook/index.html">Guestbook</a></li>
+                    <li><a href="./certifications/index.html">Certifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="muted">
+                © 2025 by-hahn · Research Notes & Achievements
+                <br>
+                Contact: seehahn@knu.ac.kr |
+                <a href="https://github.com/by-hahn" target="_blank">GitHub</a> |
+                <a href="https://www.instagram.com/by_hahn/" target="_blank">Instagram</a> |
+                <a href="https://www.linkedin.com/in/byoungyoon-hahn/" target="_blank">LinkedIn</a> |
+                <a href="https://by-hahn.com/" target="_blank">Portfolio</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- RATE LIMIT MONITOR UI (temporary) -->
+    <!-- ============================================ -->
+    <div id="rate-limit-monitor" class="hidden">
+        <div class="rate-limit-title">
+            GitHub API
+            <button class="close-monitor"
+                onclick="document.getElementById('rate-limit-monitor').classList.add('hidden')"
+                aria-label="Close monitor">×</button>
+        </div>
+        <div class="rate-status">
+            <span id="rate-text" class="muted">--/--</span>
+            <div class="rate-bar">
+                <div id="rate-bar-fill" class="rate-bar-fill good" style="width:100%"></div>
+            </div>
+        </div>
+        <div id="rate-reset" class="muted" style="font-size:0.75rem;margin-top:4px"></div>
+    </div>
+    <!-- ============================================ -->
+    <!-- RATE LIMIT MONITOR UI (temporary) -->
+    <!-- ============================================ -->
+
+    <script>
+        (function () {
+            const CONFIG = {
+                owner: 'by-hahn',
+                repo: 'blog',
+                branch: 'main',
+                categories: ['activities', 'goals', 'paper-reviews', 'posts', 'projects', 'study-notes'],
+                cacheExpiry: 5 * 60 * 1000, // 5 mins
+                enableCache: true, // if set to false, chache disabled
+                enableRateLimit: true // if set to false, rate limit monitor disabled
+            };
+
+            // ============================================
+            // CACHE MODULE (temporary)
+            // ============================================
+            const Cache = {
+                get(key) {
+                    if (!CONFIG.enableCache) return null;
+                    try {
+                        const item = localStorage.getItem(`blog_cache_${key}`);
+                        if (!item) return null;
+                        const { data, timestamp } = JSON.parse(item);
+                        if (Date.now() - timestamp > CONFIG.cacheExpiry) {
+                            localStorage.removeItem(`blog_cache_${key}`);
+                            return null;
+                        }
+                        return data;
+                    } catch (e) {
+                        return null;
+                    }
+                },
+                set(key, data) {
+                    if (!CONFIG.enableCache) return;
+                    try {
+                        localStorage.setItem(`blog_cache_${key}`, JSON.stringify({
+                            data,
+                            timestamp: Date.now()
+                        }));
+                    } catch (e) {
+                        console.warn('Cache set failed:', e);
+                    }
+                },
+                clear() {
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('blog_cache_')) localStorage.removeItem(key);
+                    });
+                }
+            };
+            // ============================================
+            // CACHE MODULE (temporary)
+            // ============================================
+
+            // ============================================
+            // RATE LIMIT MODULE (temporary)
+            // ============================================
+            const RateLimit = {
+                monitor: document.getElementById('rate-limit-monitor'),
+                text: document.getElementById('rate-text'),
+                bar: document.getElementById('rate-bar-fill'),
+                reset: document.getElementById('rate-reset'),
+
+                update(headers) {
+                    if (!CONFIG.enableRateLimit) return;
+                    const remaining = headers.get('x-ratelimit-remaining');
+                    const limit = headers.get('x-ratelimit-limit');
+                    const reset = headers.get('x-ratelimit-reset');
+
+                    if (!remaining || !limit) return;
+
+                    this.monitor.classList.remove('hidden');
+                    this.text.textContent = `${remaining}/${limit}`;
+
+                    const percent = (remaining / limit) * 100;
+                    this.bar.style.width = `${percent}%`;
+                    this.bar.className = 'rate-bar-fill ' + (percent > 50 ? 'good' : percent > 20 ? 'medium' : 'low');
+
+                    if (reset) {
+                        const resetDate = new Date(reset * 1000);
+                        this.reset.textContent = `Resets at ${resetDate.toLocaleTimeString()}`;
+                    }
+                },
+
+                showError() {
+                    if (!CONFIG.enableRateLimit) return;
+                    this.monitor.classList.remove('hidden');
+                    this.text.textContent = 'Limit reached';
+                    this.bar.style.width = '0%';
+                    this.bar.className = 'rate-bar-fill low';
+                }
+            };
+            // ============================================
+            // RATE LIMIT MODULE (temporary)
+            // ============================================
+
+            // Core functions
+            const recentEl = document.getElementById('recent');
+            const categoriesEl = document.getElementById('categories');
+            const params = new URLSearchParams(window.location.search);
+            const postPath = params.get('post');
+
+            function parseFileName(name) {
+                const m = name.match(/^(\d{4}-\d{2}-\d{2})~(.+)\.md$/);
+                if (!m) return null;
+                const date = m[1];
+                const rawTitle = m[2];
+                const title = decodeURIComponent(rawTitle).replace(/[-_]+/g, ' ').trim();
+                return { date, title };
+            }
+
+            async function fetchFolder(path) {
+                // Check cache (temporary)
+                const cached = Cache.get(`folder_${path}`);
+                if (cached) return cached;
+
+                const url = `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/${path}?ref=${CONFIG.branch}`;
+                try {
+                    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+
+                    // Rate limit update (temporary)
+                    RateLimit.update(res.headers);
+
+                    if (res.status === 403) {
+                        const resetTime = res.headers.get('x-ratelimit-reset');
+                        throw new Error(`Rate limit exceeded. Resets at ${new Date(resetTime * 1000).toLocaleTimeString()}`);
+                    }
+                    if (!res.ok) throw new Error(`GitHub API error: ${res.status}`);
+
+                    const data = await res.json();
+                    Cache.set(`folder_${path}`, data);
+                    return data;
+                } catch (e) {
+                    console.error('fetchFolder error:', path, e);
+                    if (e.message.includes('Rate limit')) RateLimit.showError();
+                    throw e;
+                }
+            }
+
+            async function fetchFile(path) {
+                const url = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/${CONFIG.branch}/${path}`;
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(`Fetch error ${res.status}`);
+                    return await res.text();
+                } catch (e) {
+                    console.error('fetchFile error:', path, e);
+                    throw e;
+                }
+            }
+
+            function showError(element, message) {
+                element.innerHTML = `<div class="alert error" role="alert">${message}</div>`;
+            }
+
+            async function viewPost() {
+                if (!postPath) return load();
+
+                try {
+                    const content = await fetchFile(postPath);
+                    if (!content) throw new Error('Post not found');
+
+                    const [category, fileName] = postPath.split('/');
+                    const meta = parseFileName(fileName);
+                    const html = marked.parse(content);
+
+                    document.querySelector('.grid').innerHTML = `
+							<main style="grid-column: 1 / -1;">
+								<div style="display: flex; gap: 16px; align-items: center; margin-bottom: 20px; flex-wrap: wrap;">
+									<a href="index.html" class="btn">← Home</a>
+									<a href="./${category}/index.html" class="btn">← ${category.replace(/-/g, ' ')}</a>
+								</div>
+								<article class="card">
+									<h1>${meta ? meta.title : fileName}</h1>
+									<div style="color: var(--muted); margin-bottom: 16px;">${meta ? meta.date : ''}</div>
+									<div style="line-height: 1.6;">${html}</div>
+								</article>
+							</main>
+						`;
+                    document.getElementById('page-indicator').textContent = 'Post';
+                } catch (e) {
+                    document.querySelector('.grid').innerHTML = `
+							<main style="grid-column: 1 / -1;">
+								<div class="alert error">
+									<strong>Error loading post</strong><br>
+									${e.message}<br>
+									<a href="index.html" class="btn" style="margin-top:12px">← Back to home</a>
+								</div>
+							</main>
+						`;
+                }
+            }
+
+            async function load() {
+                const allPosts = [];
+                const errors = [];
+
+                // Load categories
+                const results = await Promise.allSettled(
+                    CONFIG.categories.map(cat => fetchFolder(cat))
+                );
+
+                categoriesEl.innerHTML = '';
+
+                CONFIG.categories.forEach((cat, idx) => {
+                    const result = results[idx];
+
+                    if (result.status === 'rejected') {
+                        errors.push({ category: cat, error: result.reason.message });
+                        const catWrap = document.createElement('div');
+                        catWrap.className = 'card';
+                        catWrap.innerHTML = `
+								<h4 style="margin:0 0 8px">${cat.replace(/-/g, ' ')}</h4>
+								<div class="alert warning">Failed to load: ${result.reason.message}</div>
+							`;
+                        categoriesEl.appendChild(catWrap);
+                        return;
+                    }
+
+                    const folder = result.value;
+                    const posts = folder
+                        .filter(f => f.type === 'file' && f.name.endsWith('.md'))
+                        .map(f => {
+                            const meta = parseFileName(f.name);
+                            if (!meta) return null;
+                            return { category: cat, name: f.name, path: f.path, date: meta.date, title: meta.title };
+                        })
+                        .filter(Boolean)
+                        .sort((a, b) => b.date.localeCompare(a.date));
+
+                    allPosts.push(...posts);
+
+                    const catWrap = document.createElement('div');
+                    catWrap.className = 'card';
+                    const heading = document.createElement('h4');
+                    heading.textContent = cat.replace(/-/g, ' ');
+                    heading.style.margin = '0 0 8px';
+                    catWrap.appendChild(heading);
+
+                    if (posts.length === 0) {
+                        const e = document.createElement('div');
+                        e.className = 'muted';
+                        e.textContent = 'No posts found.';
+                        catWrap.appendChild(e);
+                    } else {
+                        const ul = document.createElement('ul');
+                        ul.className = 'posts';
+                        posts.slice(0, 8).forEach(p => {
+                            const li = document.createElement('li');
+                            li.className = 'post';
+                            const a = document.createElement('a');
+                            a.href = `index.html?post=${p.path}`;
+                            a.textContent = `${p.date} — ${p.title}`;
+                            li.appendChild(a);
+                            ul.appendChild(li);
+                        });
+                        catWrap.appendChild(ul);
+
+                        if (posts.length > 8) {
+                            const more = document.createElement('div');
+                            more.style.marginTop = '8px';
+                            more.className = 'muted';
+                            more.textContent = `+${posts.length - 8} more posts`;
+                            catWrap.appendChild(more);
+                        }
+
+                        const moreLink = document.createElement('div');
+                        moreLink.style.marginTop = '8px';
+                        const catLink = document.createElement('a');
+                        catLink.href = `./${cat}/index.html`;
+                        catLink.className = 'btn';
+                        catLink.textContent = 'View all';
+                        moreLink.appendChild(catLink);
+                        catWrap.appendChild(moreLink);
+                    }
+                    categoriesEl.appendChild(catWrap);
+                });
+
+                // Recent posts
+                allPosts.sort((a, b) => b.date.localeCompare(a.date));
+
+                if (errors.length > 0 && allPosts.length === 0) {
+                    recentEl.innerHTML = `<div class="alert error">Failed to load posts. Please try refreshing the page.</div>`;
+                } else if (allPosts.length === 0) {
+                    recentEl.innerHTML = '<div class="muted">No posts found in repository.</div>';
+                } else {
+                    const ul = document.createElement('ul');
+                    ul.className = 'posts';
+                    allPosts.slice(0, 12).forEach(p => {
+                        const li = document.createElement('li');
+                        li.className = 'post';
+                        const a = document.createElement('a');
+                        a.href = `index.html?post=${p.path}`;
+                        a.textContent = `${p.date} — ${p.title}`;
+                        const cat = document.createElement('span');
+                        cat.className = 'muted';
+                        cat.textContent = ` (${p.category})`;
+                        a.appendChild(cat);
+                        li.appendChild(a);
+                        ul.appendChild(li);
+                    });
+                    recentEl.innerHTML = '';
+                    recentEl.appendChild(ul);
+                }
+            }
+
+            // Initialize
+            if (postPath) {
+                viewPost();
+            } else {
+                load();
+            }
+
+            // Cache clearing shortcut (temporary)
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                    Cache.clear();
+                    alert('Cache cleared! Refreshing...');
+                    location.reload();
+                }
+            });
+
+            // Navigation toggle
+            const navToggle = document.getElementById('nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+            function toggleMobileMenu(open) {
+                if (open) {
+                    mobileMenu.classList.add('open');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (navToggle && mobileMenu && mobileMenuOverlay) {
+                navToggle.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.contains('open');
+                    toggleMobileMenu(!isOpen);
+                });
+            }
+
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>
