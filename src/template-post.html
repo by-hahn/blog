@@ -4,12 +4,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="description" content="B. Hahn's career journey across development, research, and learning." />
-    <meta property="og:title" content="B. Hahn (by-hahn)'s Personal Blog" />
-    <meta property="og:description" content="B. Hahn's career journey across development, research, and learning." />
-    <meta property="og:type" content="website" />
 
-    <title>by-hahn's Personal Blog</title>
+
+    <!-- __META__ -->
+    <title>__TITLE__</title>
 
     <!-- CSS file served from dist/css/main.css on build -->
     <link rel="stylesheet" href="css/main.css">
@@ -43,24 +41,17 @@
         </nav>
 
         <div class="grid">
-            <main>
-                <div class="card">
-                    <h2 style="margin:0 0 8px">Recent posts</h2>
-                    <div id="recent">
-
-                        <!-- __RECENT_POSTS__ -->
-
-                    </div>
+            <main style="grid-column: 1 / -1;">
+                <div style="display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
+                    <a href="/" class="btn">← Home</a>
+                    <a href="/__CATEGORY__/" class="btn">← __CATEGORY_LABEL__</a>
                 </div>
 
-                <div class="card" style="margin-top:14px">
-                    <h3 style="margin:0 0 8px">By category</h3>
-                    <div id="categories">
-
-                        <!-- __CATEGORY_CARDS__ -->
-
-                    </div>
-                </div>
+                <article class="card">
+                    <h1 style="margin-top:0">__TITLE__</h1>
+                    <div class="muted" style="margin-bottom: 16px;">__DATE__</div>
+                    <div class="post-body">__CONTENT__</div>
+                </article>
             </main>
 
             <aside>
