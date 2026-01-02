@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="description" content="B. Hahn's career journey across development, research, and learning." />
+    <meta property="og:title" content="B. Hahn (by-hahn)'s Personal Blog" />
+    <meta property="og:description" content="B. Hahn's career journey across development, research, and learning." />
+    <meta property="og:type" content="website" />
+
+    <title>by-hahn's Personal Blog</title>
+
+    <!-- CSS file served from dist/css/main.css on build -->
+    <link rel="stylesheet" href="/css/main.css">
+
+
+    <!-- Responsive Design Breakpoints:
+    - Desktop: > 900px (2-column layout with sidebar)
+    - Tablet: 600px - 900px (1-column layout, sidebar hidden)
+    - Mobile: <= 600px (1-column layout, mobile menu visible) -->
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1>by-hahn — Blog</h1>
+                <p class="lead">Byoungyoon Hahn's Blog.</p>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        </header>
+
+        <nav id="nav-menu">
+            <a class="btn" href="./activities/index.html">Activities</a>
+            <a class="btn" href="./goals/index.html">Goals</a>
+            <a class="btn" href="./paper-reviews/index.html">Paper Reviews</a>
+            <a class="btn" href="./posts/index.html">Posts</a>
+            <a class="btn" href="./projects/index.html">Projects</a>
+            <a class="btn" href="./study-notes/index.html">Study Notes</a>
+            <a class="btn" href="./guestbook/index.html">Guestbook</a>
+            <a class="btn" href="./certifications/index.html">Certifications</a>
+        </nav>
+
+        <div class="grid">
+            <main>
+                <div class="card">
+                    <h2 style="margin:0 0 8px">Recent posts</h2>
+                    <div id="recent">
+
+                        
+      <div class="card">
+        <h2 style="margin:0 0 10px">Study Notes</h2>
+        <ul class="posts"><li class="post"><a href="/study-notes/test/">2025-04-06 — Test</a></li></ul>
+      </div>
+    
+
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:14px">
+                    <h3 style="margin:0 0 8px">By category</h3>
+                    <div id="categories">
+
+                        <div class="muted">Go back <a href="/">Home</a> to browse other categories.</div>
+
+                    </div>
+                </div>
+            </main>
+
+            <aside>
+                <div class="card">
+                    <h3 style="margin:0 0 8px">About</h3>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
+                        Posts URL: /category/slug/</p>
+                </div>
+
+                <div class="card" style="margin-top:12px" id="quicklinks-card">
+                    <h4 style="margin:0 0 8px">Quick links</h4>
+                    <div class="category-list" id="quicklinks">
+                        <a class="cat" href="./activities/index.html">Activities</a>
+                        <a class="cat" href="./goals/index.html">Goals</a>
+                        <a class="cat" href="./paper-reviews/index.html">Paper Reviews</a>
+                        <a class="cat" href="./posts/index.html">Posts</a>
+                        <a class="cat" href="./projects/index.html">Projects</a>
+                        <a class="cat" href="./study-notes/index.html">Study Notes</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Menu (shown on screens <= 600px) -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <h2>Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">×</button>
+            </div>
+            <div class="mobile-menu-content">
+                <div class="card">
+                    <h4 style="margin:0 0 8px">About</h4>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
+                        Posts URL: /category/slug/</p>
+                </div>
+                <ul style="margin-top:16px;">
+                    <li><a href="./activities/index.html">Activities</a></li>
+                    <li><a href="./goals/index.html">Goals</a></li>
+                    <li><a href="./paper-reviews/index.html">Paper Reviews</a></li>
+                    <li><a href="./posts/index.html">Posts</a></li>
+                    <li><a href="./projects/index.html">Projects</a></li>
+                    <li><a href="./study-notes/index.html">Study Notes</a></li>
+                    <li><a href="./guestbook/index.html">Guestbook</a></li>
+                    <li><a href="./certifications/index.html">Certifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="muted">
+                © 2025 by-hahn · Research Notes & Achievements
+                <br>
+                Contact: seehahn@knu.ac.kr |
+                <a href="https://github.com/by-hahn" target="_blank">GitHub</a> |
+                <a href="https://www.instagram.com/by_hahn/" target="_blank">Instagram</a> |
+                <a href="https://www.linkedin.com/in/byoungyoon-hahn/" target="_blank">LinkedIn</a> |
+                <a href="https://by-hahn.com/" target="_blank">Portfolio</a>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <!-- Mobile Navigation toggle -->
+    <script>
+        (function () {
+            const navToggle = document.getElementById('nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+            function toggleMobileMenu(open) {
+                if (open) {
+                    mobileMenu.classList.add('open');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (navToggle && mobileMenu && mobileMenuOverlay) {
+                navToggle.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.contains('open');
+                    toggleMobileMenu(!isOpen);
+                });
+            }
+
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+        })();
+    </script>
+</body>
+
+</html>
