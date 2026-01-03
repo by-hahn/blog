@@ -183,6 +183,12 @@ async function copyStaticFiles() {
     await fs.copy(p404, path.join(DIST_DIR, "404.html"));
   }
 
+  // Google Search Console verification
+  const gsc = path.join(SRC_DIR, "assets", "google114f18ded00f75b0.html");
+  if (await fs.pathExists(gsc)) {
+    await fs.copy(gsc, path.join(DIST_DIR, "google114f18ded00f75b0.html"));
+  }
+
   // robots.txt (copy if exists, create if not)
   const robotsSrc = path.join(SRC_DIR, "robots.txt");
   const robotsDst = path.join(DIST_DIR, "robots.txt");
