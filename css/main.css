@@ -6,6 +6,22 @@
    - Mobile: <= 600px (1-column layout, mobile menu visible) */
 
 :root {
+    /* Light Mode - Default */
+    --bg: #fffbf7;
+    --card: #fffcf8;
+    --accent: #cc9966;
+    --muted: #636e72;
+    --glass: rgba(204, 153, 102, 0.03);
+    --success: #27ae60;
+    --warning: #e67e22;
+    --error: #c0392b;
+    --text-primary: #2d3436;
+    --text-secondary: #636e72;
+    --border: #e8e3dd;
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
     --bg: #0f1724;
     --card: #0b1220;
     --accent: #3b82f6;
@@ -13,7 +29,27 @@
     --glass: rgba(255, 255, 255, 0.03);
     --success: #10b981;
     --warning: #f59e0b;
-    --error: #ef4444
+    --error: #ef4444;
+    --text-primary: #e6eef6;
+    --text-secondary: #9aa4b2;
+    --border: rgba(255, 255, 255, 0.03);
+}
+
+/* System Preference Fallback */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+        --bg: #0f1724;
+        --card: #0b1220;
+        --accent: #3b82f6;
+        --muted: #9aa4b2;
+        --glass: rgba(255, 255, 255, 0.03);
+        --success: #10b981;
+        --warning: #f59e0b;
+        --error: #ef4444;
+        --text-primary: #e6eef6;
+        --text-secondary: #9aa4b2;
+        --border: rgba(255, 255, 255, 0.03);
+    }
 }
 
 * {
@@ -25,8 +61,8 @@ body {
     height: 100%;
     margin: 0;
     font-family: Inter, Segoe UI, Arial, sans-serif;
-    background: #071029;
-    color: #e6eef6
+    background: var(--bg);
+    color: var(--text-primary)
 }
 
 .wrap {
@@ -59,7 +95,7 @@ h1 {
 
 p.lead {
     margin: 4px 0 0;
-    color: var(--muted);
+    color: var(--text-secondary);
     font-size: 0.95rem
 }
 
@@ -77,13 +113,13 @@ a.btn {
     background: var(--glass);
     color: inherit;
     text-decoration: none;
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
     transition: all 0.2s ease
 }
 
 a.btn:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1)
+    background: var(--glass);
+    border-color: var(--accent)
 }
 
 a.btn:focus {
@@ -99,10 +135,10 @@ a.btn:focus {
 }
 
 .card {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    background: var(--card);
     padding: 16px;
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.03)
+    border: 1px solid var(--border)
 }
 
 ul.posts {
@@ -113,7 +149,7 @@ ul.posts {
 
 li.post {
     padding: 8px 0;
-    border-bottom: 1px dashed rgba(255, 255, 255, 0.02)
+    border-bottom: 1px dashed var(--border);
 }
 
 li.post:last-child {
@@ -131,7 +167,7 @@ li.post a:hover {
 }
 
 .muted {
-    color: var(--muted);
+    color: var(--text-secondary);
     font-size: 0.9rem
 }
 
@@ -145,7 +181,8 @@ li.post a:hover {
 .cat {
     padding: 10px;
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--glass);
+    border: 1px solid var(--border);
     text-decoration: none;
     color: inherit;
     display: block;
@@ -153,7 +190,8 @@ li.post a:hover {
 }
 
 .cat:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--card);
+    border-color: var(--accent);
     transform: translateY(-1px)
 }
 
@@ -326,9 +364,9 @@ a:visited {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: rgba(15, 23, 36, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e6eef6;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
     font-size: 1.5rem;
     cursor: pointer;
     padding: 12px;
@@ -340,7 +378,8 @@ a:visited {
 }
 
 .nav-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--glass);
+    border-color: var(--accent);
     transform: scale(1.05);
 }
 
@@ -375,12 +414,12 @@ a:visited {
     width: 320px;
     max-width: 85vw;
     height: 100vh;
-    background: linear-gradient(180deg, #0f1724 0%, #0b1220 100%);
+    background: var(--card);
     z-index: 1999;
     transition: right 0.3s ease;
     overflow-y: auto;
     box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 1px solid var(--border);
 }
 
 .mobile-menu.open {
@@ -389,7 +428,7 @@ a:visited {
 
 .mobile-menu-header {
     padding: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -398,13 +437,13 @@ a:visited {
 .mobile-menu-header h2 {
     margin: 0;
     font-size: 1.2rem;
-    color: #e6eef6;
+    color: var(--text-primary);
 }
 
 .mobile-menu-close {
     background: none;
     border: none;
-    color: #e6eef6;
+    color: var(--text-primary);
     font-size: 1.8rem;
     cursor: pointer;
     padding: 4px 8px;
@@ -435,17 +474,17 @@ a:visited {
     display: block;
     padding: 14px 16px;
     background: var(--glass);
-    border: 1px solid rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    color: #e6eef6;
+    color: var(--text-primary);
     text-decoration: none;
     transition: all 0.2s;
     font-size: 1rem;
 }
 
 .mobile-menu-content a:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--card);
+    border-color: var(--accent);
     transform: translateX(-4px);
 }
 
@@ -455,4 +494,10 @@ a:visited {
         position: sticky;
         top: 20px;
     }
+}
+
+/* Theme Toggle Link */
+#theme-toggle {
+    color: var(--accent);
+    text-decoration: none;
 }
