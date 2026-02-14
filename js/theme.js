@@ -37,8 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            applyTheme(newTheme);
-            localStorage.setItem('blog-theme', newTheme);
+            // Add a slight delay for smoother transition
+            setTimeout(() => {
+                applyTheme(newTheme);
+                localStorage.setItem('blog-theme', newTheme);
+            }, 400);
         });
     }
 
