@@ -173,14 +173,14 @@ li.post a:hover {
 .category-list {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap:7px;
     margin-top: 10px
 }
 
 .cat {
-    padding: 10px;
-    border-radius: 8px;
-    background: var(--glass);
+    padding: 9px;
+    border-radius: 10px;
+    background: var(--card);
     border: 1px solid var(--border);
     text-decoration: none;
     color: inherit;
@@ -189,7 +189,7 @@ li.post a:hover {
 }
 
 .cat:hover {
-    background: var(--card);
+    background: var(--glass);
     transform: translateY(-1px)
 }
 
