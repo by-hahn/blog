@@ -11,7 +11,7 @@
     --card: #fffcf8;
     --accent: #cc9966;
     --muted: #636e72;
-    --glass: rgba(204, 153, 102, 0.03);
+    --glass: rgba(230, 202, 175, 0.01);
     --success: #27ae60;
     --warning: #e67e22;
     --error: #c0392b;
@@ -119,7 +119,6 @@ a.btn {
 
 a.btn:hover {
     background: var(--glass);
-    border-color: var(--accent)
 }
 
 a.btn:focus {
@@ -191,7 +190,6 @@ li.post a:hover {
 
 .cat:hover {
     background: var(--card);
-    border-color: var(--accent);
     transform: translateY(-1px)
 }
 
@@ -379,7 +377,6 @@ a:visited {
 
 .nav-toggle:hover {
     background: var(--glass);
-    border-color: var(--accent);
     transform: scale(1.05);
 }
 
@@ -484,7 +481,6 @@ a:visited {
 
 .mobile-menu-content a:hover {
     background: var(--card);
-    border-color: var(--accent);
     transform: translateX(-4px);
 }
 
