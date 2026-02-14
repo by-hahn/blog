@@ -37,11 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             
-            // Add a slight delay for smoother transition
+            // Add transition class for smooth color change
+            html.classList.add('theme-transitioning');
+            
+            // Apply theme change after a short delay
             setTimeout(() => {
                 applyTheme(newTheme);
                 localStorage.setItem('blog-theme', newTheme);
-            }, 400);
+                
+                // Remove transition class after animation completes
+                setTimeout(() => {
+                    html.classList.remove('theme-transitioning');
+                }, 400);
+            }, 100);
         });
     }
 
