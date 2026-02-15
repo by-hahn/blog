@@ -48,37 +48,24 @@
             <a class="btn" href="/certifications">Certifications</a>
         </nav>
 
-        <div class="grid">
+        <div class="grid grid-post">
             <main>
-                <div style="display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
-                    <a href="/" class="btn">← Home</a>
-                    <a href="/study-notes/" class="btn">← Study Notes</a>
-                </div>
-
                 <article class="card">
                     <h1 style="margin-top:0">Test</h1>
                     <div class="muted" style="margin-bottom: 16px;">2025-04-06</div>
+                    <!-- Mobile TOC (visible on tablet/mobile) -->
+                    
                     <div class="post-body"></div>
                 </article>
             </main>
 
-            <aside>
-                <div class="card">
-                    <h3 style="margin:0 0 8px">About</h3>
-                    <p class="muted">About Hahn, Byoungyoon</p>
-                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
-                        Posts URL: /category/slug/</p>
-                </div>
-
-                <div class="card" style="margin-top:12px" id="quicklinks-card">
-                    <h4 style="margin:0 0 8px">Quick links</h4>
-                    <div class="category-list" id="quicklinks">
-                        <a class="cat" href="/activities">Activities</a>
-                        <a class="cat" href="/goals">Goals</a>
-                        <a class="cat" href="/paper-reviews">Paper Reviews</a>
-                        <a class="cat" href="/posts">Posts</a>
-                        <a class="cat" href="/projects">Projects</a>
-                        <a class="cat" href="/study-notes">Study Notes</a>
+            <aside class="post-aside">
+                <div class="toc-wrap">
+                    <h4 class="toc-title">Contents</h4>
+                    
+                    <div class="toc-nav">
+                        <a href="/study-notes/" class="btn">← Study Notes</a>
+                        <a href="/" class="btn">← Home</a>
                     </div>
                 </div>
             </aside>
@@ -165,6 +152,32 @@
                     toggleMobileMenu(false);
                 });
             }
+        })();
+    </script>
+
+    <!-- TOC Scroll Spy -->
+    <script>
+        (function () {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            if (!tocLinks.length) return;
+
+            const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+            const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
+            if (!headings.length) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        tocLinks.forEach(link => link.classList.remove('active'));
+                        document.querySelectorAll('.toc-link[href="#' + entry.target.id + '"]')
+                            .forEach(link => link.classList.add('active'));
+                    }
+                });
+            }, {
+                rootMargin: '-10% 0px -75% 0px'
+            });
+
+            headings.forEach(h => observer.observe(h));
         })();
     </script>
 </body>

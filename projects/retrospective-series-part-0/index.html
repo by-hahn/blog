@@ -48,19 +48,16 @@
             <a class="btn" href="/certifications">Certifications</a>
         </nav>
 
-        <div class="grid">
+        <div class="grid grid-post">
             <main>
-                <div style="display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
-                    <a href="/" class="btn">← Home</a>
-                    <a href="/projects/" class="btn">← Projects</a>
-                </div>
-
                 <article class="card">
                     <h1 style="margin-top:0">Blog Development Plan &amp; Retrospective Series</h1>
                     <div class="muted" style="margin-bottom: 16px;">2026-01-04</div>
+                    <!-- Mobile TOC (visible on tablet/mobile) -->
+                    <details class="mobile-toc"><summary>📑 Table of Contents</summary><ul class="toc-list"><li><a href="#introduction" class="toc-link">Introduction</a></li><li><a href="#why-i-built-my-own-blog" class="toc-link toc-sub">Why I Built My Own Blog</a></li><li><a href="#initial-approach-and-its-limitations" class="toc-link toc-sub">Initial Approach and Its Limitations</a></li><li><a href="#the-shift-build-time-generation" class="toc-link toc-sub">The Shift: Build-Time Generation</a></li><li><a href="#whats-next" class="toc-link">What’s Next</a></li><li><a href="#content-amp-ux-enhancements" class="toc-link toc-sub">Content &amp; UX Enhancements</a></li><li><a href="#technical-improvements" class="toc-link toc-sub">Technical Improvements</a></li><li><a href="#connecting-the-blog-with-my-portfolio" class="toc-link">Connecting the Blog with My Portfolio</a></li><li><a href="#coming-up-the-retrospective-series" class="toc-link">Coming Up: The Retrospective Series</a></li><li><a href="#wrapping-up" class="toc-link">Wrapping Up</a></li></ul></details>
                     <div class="post-body"><h1>Blog Development Plan &amp; Retrospective Series</h1>
-<h2>Introduction</h2>
-<h3>Why I Built My Own Blog</h3>
+<h2 id="introduction">Introduction</h2>
+<h3 id="why-i-built-my-own-blog">Why I Built My Own Blog</h3>
 <p>I wanted a place to archive my work, projects, certifications, and the lessons I’ve learned.
 But more than that, I wanted to build the platform itself.</p>
 <p>Instead of just using an existing tool like Jekyll or Hugo, I decided to treat
@@ -69,7 +66,7 @@ like the right way to deeply understand how static sites actually work.
 This included content processing, rendering, deployment, and SEO.</p>
 <p>It wasn’t the fastest path, but it was a valuable journey that taught me a lot.</p>
 <hr>
-<h3>Initial Approach and Its Limitations</h3>
+<h3 id="initial-approach-and-its-limitations">Initial Approach and Its Limitations</h3>
 <p>My first implementation was a client-side rendered blog that fetched posts directly
 from the GitHub API. As a proof of concept, it worked. However, when considering real-world
 usage, the limitations became apparent:</p>
@@ -81,7 +78,7 @@ usage, the limitations became apparent:</p>
 </ul>
 <p>This approach helped me validate the idea, but it wasn’t something I wanted to scale long-term.</p>
 <hr>
-<h3>The Shift: Build-Time Generation</h3>
+<h3 id="the-shift-build-time-generation">The Shift: Build-Time Generation</h3>
 <p>To address these issues, I redesigned the architecture around build-time generation:</p>
 <ul>
 <li>
@@ -100,10 +97,10 @@ Markdown files are converted into fully static HTML at build time.</p>
 <li>Zero runtime dependencies on external APIs</li>
 </ul>
 <hr>
-<h2>What’s Next</h2>
+<h2 id="whats-next">What’s Next</h2>
 <p>With the core architecture in place, the next phase focuses on polish, readability,
 and long-term extensibility.</p>
-<h3>Content &amp; UX Enhancements</h3>
+<h3 id="content-amp-ux-enhancements">Content &amp; UX Enhancements</h3>
 <p><strong>1. Guestbook</strong></p>
 <ul>
 <li>A lightweight guestbook powered by Giscus</li>
@@ -124,7 +121,7 @@ and long-term extensibility.</p>
 <li>Full-text search across all posts</li>
 <li>Essential as content volume grows</li>
 </ul>
-<h3>Technical Improvements</h3>
+<h3 id="technical-improvements">Technical Improvements</h3>
 <p>⭐ <strong>[Core Focus] Markdown → HTML Rendering &amp; Design Improvements</strong></p>
 <ul>
 <li>Improved typography for long-form technical writing</li>
@@ -151,7 +148,7 @@ and long-term extensibility.</p>
 <li>Fixing edge cases discovered after deployment</li>
 </ul>
 <hr>
-<h2>Connecting the Blog with My Portfolio</h2>
+<h2 id="connecting-the-blog-with-my-portfolio">Connecting the Blog with My Portfolio</h2>
 <p>While this blog is a standalone project, my portfolio site remains the primary entry
 point. One of my goals is to make the two feel naturally connected while keeping their architectures independent.</p>
 <p>⭐ <strong>[Core Focus] Portfolio-Blog Integration</strong></p>
@@ -163,7 +160,7 @@ point. One of my goals is to make the two feel naturally connected while keeping
 </ul>
 <p>This approach keeps both sites fast, simple, and loosely coupled.</p>
 <hr>
-<h2>Coming Up: The Retrospective Series</h2>
+<h2 id="coming-up-the-retrospective-series">Coming Up: The Retrospective Series</h2>
 <p>I’m planning a short retrospective series (around five posts) that dives deeper into
 the technical side of this project:</p>
 <p>(TBD)</p>
@@ -177,7 +174,7 @@ the technical side of this project:</p>
 <p>Each post will focus on real decisions, trade-offs, and mistakes.
 Not just the final result.</p>
 <hr>
-<h2>Wrapping Up</h2>
+<h2 id="wrapping-up">Wrapping Up</h2>
 <p>Building this blog from scratch required more effort than using an existing framework,
 but it paid off.</p>
 <p>I now have:</p>
@@ -194,23 +191,13 @@ I built it that way.</p>
                 </article>
             </main>
 
-            <aside>
-                <div class="card">
-                    <h3 style="margin:0 0 8px">About</h3>
-                    <p class="muted">About Hahn, Byoungyoon</p>
-                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
-                        Posts URL: /category/slug/</p>
-                </div>
-
-                <div class="card" style="margin-top:12px" id="quicklinks-card">
-                    <h4 style="margin:0 0 8px">Quick links</h4>
-                    <div class="category-list" id="quicklinks">
-                        <a class="cat" href="/activities">Activities</a>
-                        <a class="cat" href="/goals">Goals</a>
-                        <a class="cat" href="/paper-reviews">Paper Reviews</a>
-                        <a class="cat" href="/posts">Posts</a>
-                        <a class="cat" href="/projects">Projects</a>
-                        <a class="cat" href="/study-notes">Study Notes</a>
+            <aside class="post-aside">
+                <div class="toc-wrap">
+                    <h4 class="toc-title">Contents</h4>
+                    <ul class="toc-list"><li><a href="#introduction" class="toc-link">Introduction</a></li><li><a href="#why-i-built-my-own-blog" class="toc-link toc-sub">Why I Built My Own Blog</a></li><li><a href="#initial-approach-and-its-limitations" class="toc-link toc-sub">Initial Approach and Its Limitations</a></li><li><a href="#the-shift-build-time-generation" class="toc-link toc-sub">The Shift: Build-Time Generation</a></li><li><a href="#whats-next" class="toc-link">What’s Next</a></li><li><a href="#content-amp-ux-enhancements" class="toc-link toc-sub">Content &amp; UX Enhancements</a></li><li><a href="#technical-improvements" class="toc-link toc-sub">Technical Improvements</a></li><li><a href="#connecting-the-blog-with-my-portfolio" class="toc-link">Connecting the Blog with My Portfolio</a></li><li><a href="#coming-up-the-retrospective-series" class="toc-link">Coming Up: The Retrospective Series</a></li><li><a href="#wrapping-up" class="toc-link">Wrapping Up</a></li></ul>
+                    <div class="toc-nav">
+                        <a href="/projects/" class="btn">← Projects</a>
+                        <a href="/" class="btn">← Home</a>
                     </div>
                 </div>
             </aside>
@@ -297,6 +284,32 @@ I built it that way.</p>
                     toggleMobileMenu(false);
                 });
             }
+        })();
+    </script>
+
+    <!-- TOC Scroll Spy -->
+    <script>
+        (function () {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            if (!tocLinks.length) return;
+
+            const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+            const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
+            if (!headings.length) return;
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        tocLinks.forEach(link => link.classList.remove('active'));
+                        document.querySelectorAll('.toc-link[href="#' + entry.target.id + '"]')
+                            .forEach(link => link.classList.add('active'));
+                    }
+                });
+            }, {
+                rootMargin: '-10% 0px -75% 0px'
+            });
+
+            headings.forEach(h => observer.observe(h));
         })();
     </script>
 </body>
