@@ -248,11 +248,13 @@ article h1 {
 }
 
 article h2 {
-    font-size: 1.5rem
+    font-size: 1.5rem;
+    scroll-margin-top: 24px
 }
 
 article h3 {
-    font-size: 1.25rem
+    font-size: 1.25rem;
+    scroll-margin-top: 24px
 }
 
 article p {
@@ -308,6 +310,29 @@ article ul,
 article ol {
     padding-left: 1.5em;
     line-height: 1.7
+}
+
+/* Mobile TOC (inside article — must be before media queries) */
+.mobile-toc {
+    display: none;
+    margin-bottom: 20px;
+}
+
+.mobile-toc summary {
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 8px 0;
+}
+
+.mobile-toc .toc-list {
+    margin-top: 8px;
+}
+
+.mobile-toc .toc-link {
+    font-size: 0.85rem;
+    padding: 5px 0 5px 10px;
 }
 
 /* Link styles */
@@ -580,29 +605,6 @@ a:visited {
     font-size: 0.8rem;
     padding: 6px 10px;
     text-align: center;
-}
-
-/* Mobile TOC (inside article) */
-.mobile-toc {
-    display: none;
-    margin-bottom: 20px;
-}
-
-.mobile-toc summary {
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    padding: 8px 0;
-}
-
-.mobile-toc .toc-list {
-    margin-top: 8px;
-}
-
-.mobile-toc .toc-link {
-    font-size: 0.85rem;
-    padding: 5px 0 5px 10px;
 }
 
 /* Theme Toggle Link */

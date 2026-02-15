@@ -55,8 +55,7 @@
                     <div class="muted" style="margin-bottom: 16px;">2026-01-04</div>
                     <!-- Mobile TOC (visible on tablet/mobile) -->
                     <details class="mobile-toc"><summary>📑 Table of Contents</summary><ul class="toc-list"><li><a href="#introduction" class="toc-link">Introduction</a></li><li><a href="#why-i-built-my-own-blog" class="toc-link toc-sub">Why I Built My Own Blog</a></li><li><a href="#initial-approach-and-its-limitations" class="toc-link toc-sub">Initial Approach and Its Limitations</a></li><li><a href="#the-shift-build-time-generation" class="toc-link toc-sub">The Shift: Build-Time Generation</a></li><li><a href="#whats-next" class="toc-link">What’s Next</a></li><li><a href="#content-amp-ux-enhancements" class="toc-link toc-sub">Content &amp; UX Enhancements</a></li><li><a href="#technical-improvements" class="toc-link toc-sub">Technical Improvements</a></li><li><a href="#connecting-the-blog-with-my-portfolio" class="toc-link">Connecting the Blog with My Portfolio</a></li><li><a href="#coming-up-the-retrospective-series" class="toc-link">Coming Up: The Retrospective Series</a></li><li><a href="#wrapping-up" class="toc-link">Wrapping Up</a></li></ul></details>
-                    <div class="post-body"><h1>Blog Development Plan &amp; Retrospective Series</h1>
-<h2 id="introduction">Introduction</h2>
+                    <div class="post-body"><h2 id="introduction">Introduction</h2>
 <h3 id="why-i-built-my-own-blog">Why I Built My Own Blog</h3>
 <p>I wanted a place to archive my work, projects, certifications, and the lessons I’ve learned.
 But more than that, I wanted to build the platform itself.</p>
@@ -297,19 +296,56 @@ I built it that way.</p>
             const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
             if (!headings.length) return;
 
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        tocLinks.forEach(link => link.classList.remove('active'));
-                        document.querySelectorAll('.toc-link[href="#' + entry.target.id + '"]')
-                            .forEach(link => link.classList.add('active'));
+            let currentId = '';
+            let ticking = false;
+            const OFFSET = 40; // px from top to consider a heading "passed"
+
+            function setActive(id) {
+                if (id === currentId) return;
+                currentId = id;
+                tocLinks.forEach(link => {
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
                     }
                 });
-            }, {
-                rootMargin: '-10% 0px -75% 0px'
-            });
+            }
 
-            headings.forEach(h => observer.observe(h));
+            function updateActiveHeading() {
+                ticking = false;
+
+                // At bottom of page → activate last heading
+                const scrollBottom = window.innerHeight + window.scrollY;
+                const docHeight = document.documentElement.scrollHeight;
+                if (docHeight - scrollBottom < 60) {
+                    setActive(headings[headings.length - 1].id);
+                    return;
+                }
+
+                // Find the last heading whose top has scrolled past OFFSET
+                let activeId = '';
+                for (let i = 0; i < headings.length; i++) {
+                    const rect = headings[i].getBoundingClientRect();
+                    if (rect.top <= OFFSET) {
+                        activeId = headings[i].id;
+                    } else {
+                        break;
+                    }
+                }
+
+                setActive(activeId || headings[0].id);
+            }
+
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(updateActiveHeading);
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            updateActiveHeading(); // initial state
         })();
     </script>
 </body>
