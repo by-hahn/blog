@@ -6,8 +6,6 @@ og_description: "Retrospective Series Part. 0"
 # og_image: "auto og image generator not yet developed"
 ---
 
-# Blog Development Plan & Retrospective Series
-
 ## Introduction
 
 ### Why I Built My Own Blog
