@@ -134,6 +134,66 @@ function humanize(s) {
   return String(s).replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+// Slugify text for heading IDs (supports Korean and other unicode)
+function slugify(text) {
+  const slug = text
+    .trim()
+    .toLowerCase()
+    .replace(/[\s]+/g, "-")
+    .replace(/[^\p{L}\p{N}\-]/gu, "")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+  return slug || "heading";
+}
+
+// Extract h2/h3 headings from rendered HTML, add id attributes, return modified HTML + headings list
+function extractHeadingsAndAddIds(htmlContent) {
+  const headings = [];
+  const usedIds = new Set();
+
+  const result = htmlContent.replace(/<(h[23])([^>]*)>(.*?)<\/\1>/gi, (match, tag, attrs, inner) => {
+    const level = parseInt(tag[1]);
+    const plainText = inner.replace(/<[^>]+>/g, "").trim();
+    let id = slugify(plainText);
+
+    // Ensure unique IDs
+    let uniqueId = id;
+    let counter = 1;
+    while (usedIds.has(uniqueId)) {
+      uniqueId = `${id}-${counter++}`;
+    }
+    usedIds.add(uniqueId);
+
+    headings.push({ level, text: plainText, id: uniqueId });
+    return `<${tag} id="${uniqueId}"${attrs}>${inner}</${tag}>`;
+  });
+
+  return { html: result, headings };
+}
+
+// Build TOC HTML from extracted headings
+function buildTocHtml(headings) {
+  if (headings.length === 0) return "";
+
+  let html = '<ul class="toc-list">';
+  for (const h of headings) {
+    const sub = h.level === 3 ? " toc-sub" : "";
+    html += `<li><a href="#${h.id}" class="toc-link${sub}">${h.text}</a></li>`;
+  }
+  html += "</ul>";
+  return html;
+}
+
+// Build mobile TOC (collapsible details element)
+function buildMobileTocHtml(headings) {
+  if (headings.length === 0) return "";
+
+  let html = '<details class="mobile-toc"><summary>\uD83D\uDCD1 Table of Contents</summary>';
+  html += buildTocHtml(headings);
+  html += "</details>";
+  return html;
+}
+
 function buildPermalink({ category, slug }) {
   return `/${category}/${slug}/`;
 }
@@ -341,6 +401,11 @@ ${entries}
 
         const htmlContent = md.render(content);
 
+        // Extract headings and add anchor IDs for TOC
+        const { html: processedHtml, headings } = extractHeadingsAndAddIds(htmlContent);
+        const tocHtml = buildTocHtml(headings);
+        const mobileTocHtml = buildMobileTocHtml(headings);
+
         const meta = buildMetaTags({
           title: og_title || title,
           description: og_description || description,
@@ -363,7 +428,9 @@ ${entries}
           .replace("<!-- __META__ -->", meta)
           .replaceAll("__TITLE__", escapeHtml(title))
           .replaceAll("__DATE__", escapeHtml(name.date))
-          .replaceAll("__CONTENT__", htmlContent)
+          .replaceAll("__CONTENT__", processedHtml)
+          .replaceAll("__TOC__", tocHtml)
+          .replaceAll("__MOBILE_TOC__", mobileTocHtml)
           .replaceAll("__CATEGORY__", category)
           .replaceAll("__CATEGORY_LABEL__", escapeHtml(humanize(category)));
 
