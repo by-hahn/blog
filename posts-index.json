@@ -1,7 +1,30 @@
 [
   {
+    "title": "Test Post - Projects",
+    "subtitle": "Testing project posts",
+    "description": "test of by-hahn blog - projects",
+    "tags": [
+      "test"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
+    "category": "projects",
+    "date": "2026-02-15",
+    "slug": "test",
+    "permalink": "/projects/test/",
+    "url": "https://blog.by-hahn.com/projects/test/"
+  },
+  {
     "title": "Blog Development Plan & Retrospective Series",
-    "description": "Retrospective Series Part. 0",
+    "subtitle": "Retrospective Series Part. 0",
+    "description": "I wanted a place to archive my work, projects, certifications, and the lessons I've learned.\nBut more than that, I wanted to build the platform itself.",
+    "tags": [
+      "blog",
+      "ssg",
+      "retrospective"
+    ],
+    "featured": true,
+    "readingTime": "4 min",
     "category": "projects",
     "date": "2026-01-04",
     "slug": "retrospective-series-part-0",
@@ -9,8 +32,14 @@
     "url": "https://blog.by-hahn.com/projects/retrospective-series-part-0/"
   },
   {
-    "title": "Test",
-    "description": "",
+    "title": "Test Post - Study Notes",
+    "subtitle": "Testing study note posts",
+    "description": "test of by-hahn blog - study-notes",
+    "tags": [
+      "test"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
     "category": "study-notes",
     "date": "2025-04-06",
     "slug": "test",
@@ -18,8 +47,14 @@
     "url": "https://blog.by-hahn.com/study-notes/test/"
   },
   {
-    "title": "Test",
-    "description": "",
+    "title": "Test Post - Posts",
+    "subtitle": "Testing regular posts",
+    "description": "test of by-hahn blog - posts",
+    "tags": [
+      "test"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
     "category": "posts",
     "date": "2025-04-06",
     "slug": "test",
@@ -27,8 +62,14 @@
     "url": "https://blog.by-hahn.com/posts/test/"
   },
   {
-    "title": "Test",
-    "description": "",
+    "title": "Test Post - Paper Reviews",
+    "subtitle": "Testing paper review posts",
+    "description": "test of by-hahn blog - paper-reviews",
+    "tags": [
+      "test"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
     "category": "paper-reviews",
     "date": "2025-04-06",
     "slug": "test",
@@ -36,8 +77,14 @@
     "url": "https://blog.by-hahn.com/paper-reviews/test/"
   },
   {
-    "title": "Test",
-    "description": "",
+    "title": "Test Post - Goals",
+    "subtitle": "Testing goal posts",
+    "description": "test of by-hahn blog - goals",
+    "tags": [
+      "test"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
     "category": "goals",
     "date": "2025-04-06",
     "slug": "test",
@@ -45,8 +92,14 @@
     "url": "https://blog.by-hahn.com/goals/test/"
   },
   {
-    "title": "Test",
-    "description": "",
+    "title": "Test Post - Certifications",
+    "subtitle": "Testing certification posts",
+    "description": "test of by-hahn blog -certificate. \n블로그 글 배열 방식 위해서 날짜를 파일명 앞에 붙이는 아이디어",
+    "tags": [
+      "test"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
     "category": "certifications",
     "date": "2025-04-06",
     "slug": "test",
@@ -55,7 +108,14 @@
   },
   {
     "title": "test",
+    "subtitle": "Testing activity posts",
     "description": "Custom SSG First test page",
+    "tags": [
+      "ssg",
+      "github-actions"
+    ],
+    "featured": false,
+    "readingTime": "1 min",
     "category": "activities",
     "date": "2025-04-06",
     "slug": "test",
