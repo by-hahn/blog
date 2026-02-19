@@ -1,8 +1,9 @@
 ---
 title: "Blog Development Plan & Retrospective Series"
-description: "Retrospective Series Part. 0"
+subtitle: "Retrospective Series Part. 0"
+tags: ["blog", "ssg", "retrospective"]
+featured: true
 og_title: "Blog Development Plan & Retrospective Series"
-og_description: "Retrospective Series Part. 0"
 # og_image: "auto og image generator not yet developed"
 ---
 
