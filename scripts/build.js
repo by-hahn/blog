@@ -134,7 +134,36 @@ function humanize(s) {
   return String(s).replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-// Slugify text for heading IDs (supports Korean and other unicode)
+// Calculate reading time in minutes (average 238 words per minute)
+function calculateReadingTime(markdownContent) {
+  const wordCount = markdownContent
+    .split(/\s+/)
+    .filter(word => word.length > 0).length;
+  const minutes = Math.max(1, Math.ceil(wordCount / 238));
+  return `${minutes} min`;
+}
+
+// Extract first paragraph from markdown content for auto-description
+function extractFirstParagraph(markdownContent) {
+  // Split by double newlines to find paragraphs
+  const paragraphs = markdownContent
+    .split(/\n\n+/)
+    .map(p => p.trim())
+    .filter(p => p.length > 0 && !p.startsWith("#")); // Filter out headings
+  
+  if (paragraphs.length === 0) return "";
+  
+  const firstPara = paragraphs[0];
+  // Remove markdown syntax for cleaner description
+  const cleaned = firstPara
+    .replace(/[*_~`]/g, "") // Remove markdown formatting
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1") // Convert links to plain text
+    .trim();
+  
+  return cleaned.slice(0, 500); // Limit to 500 characters
+}
+
+// Slugify text for heading IDs
 function slugify(text) {
   const slug = text
     .trim()
@@ -286,11 +315,11 @@ function injectMetaIntoHead(html, metaBlock) {
   return html;
 }
 
-function renderIndexTemplate(indexTpl, { canonicalPath, recentHtml, categoryCardsHtml }) {
+function renderIndexTemplate(indexTpl, { canonicalPath, recentHtml, categoryCardsHtml, featuredHtml = "" }) {
   const meta = buildMetaTags({
     title: SITE.og.title || SITE.title,
     description: SITE.og.description || SITE.description,
-    fullUrl: SITE.url + "/",
+    fullUrl: SITE.url + canonicalPath,
     type: SITE.og.type || "website",
     og_image: SITE.og.image,
   });
@@ -300,6 +329,7 @@ function renderIndexTemplate(indexTpl, { canonicalPath, recentHtml, categoryCard
   html = injectMetaIntoHead(html, meta);
 
   html = html
+    .replace("<!-- __FEATURED_POSTS__ -->", featuredHtml)
     .replace("<!-- __RECENT_POSTS__ -->", recentHtml)
     .replace("<!-- __CATEGORY_CARDS__ -->", categoryCardsHtml);
 
@@ -382,12 +412,18 @@ ${entries}
         const permalink = buildPermalink({ category, slug });
         const fullUrl = fullUrlFromPath(permalink);
 
+        // Calculate reading time
+        const readingTime = calculateReadingTime(content);
+
         // Limit frontmatter field lengths for security
         const title = fm?.title ? String(fm.title).slice(0, 200) : humanize(slug);
-        const description = fm?.description ? String(fm.description).slice(0, 500) : "";
+        const subtitle = fm?.subtitle ? String(fm.subtitle).slice(0, 200) : "";
+        const description = fm?.description ? String(fm.description).slice(0, 500) : extractFirstParagraph(content);
+        const tags = Array.isArray(fm?.tags) ? fm.tags.map(t => String(t).slice(0, 50)) : [];
+        const featured = Boolean(fm?.featured);
         const og_image = fm?.og_image ? String(fm.og_image).slice(0, 500) : "";
         const og_title = fm?.og_title ? String(fm.og_title).slice(0, 200) : "";
-        const og_description = fm?.og_description ? String(fm.og_description).slice(0, 500) : "";
+        const og_description = description;  // Auto-generated from description
 
         // Check: validate og_image URL
         let validOgImage = "";
@@ -427,7 +463,9 @@ ${entries}
         const outHtml = postTpl
           .replace("<!-- __META__ -->", meta)
           .replaceAll("__TITLE__", escapeHtml(title))
+          .replaceAll("__SUBTITLE__", escapeHtml(subtitle))
           .replaceAll("__DATE__", escapeHtml(name.date))
+          .replaceAll("__READING_TIME__", escapeHtml(readingTime))
           .replaceAll("__CONTENT__", processedHtml)
           .replaceAll("__TOC__", tocHtml)
           .replaceAll("__MOBILE_TOC__", mobileTocHtml)
@@ -438,7 +476,11 @@ ${entries}
 
         posts.push({
           title,
+          subtitle,
           description,
+          tags,
+          featured,
+          readingTime,
           category,
           date: name.date,
           slug,
@@ -458,6 +500,17 @@ ${entries}
     // Category list fixed by 'nav' standard
     const discovered = [...new Set(posts.map(p => p.category))];
     const categories = [...new Set([...NAV_CATEGORIES, ...discovered])];
+
+    // Build featured posts section
+    const featuredPosts = posts.filter(p => p.featured);
+    const featuredHtml = featuredPosts.length > 0
+      ? `<div class="card" style="border-color: var(--featured); border-width: 2px; margin-bottom: 14px;">
+      <h2 style="margin:0 0 8px">Featured posts</h2>
+      <ul class="posts">\n${featuredPosts.slice(0, 3).map(p =>
+        `<li class="post"><a href="${p.permalink}">${escapeHtml(p.date)} — ${escapeHtml(p.title)}</a></li>`
+      ).join("\n")}\n</ul>${featuredPosts.length > 3 ? `<div style="margin-top:10px"><a class="btn" href="/featured/">View all featured posts</a></div>` : ""}
+    </div>`
+      : "";
 
     const recentHtml = posts.length
       ? `<ul class="posts">\n${posts.slice(0, 12).map(p =>
@@ -487,6 +540,7 @@ ${entries}
       canonicalPath: "/",
       recentHtml,
       categoryCardsHtml,
+      featuredHtml,
     });
 
     await fs.writeFile(path.join(DIST_DIR, "index.html"), homeHtml, "utf8");
