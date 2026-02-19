@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     html.classList.remove('theme-transitioning');
                 }, 400);
-            }, 0);
+            }, 100);
         });
     }
 
