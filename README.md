@@ -17,15 +17,16 @@ The project began as a runtime-rendered blog: posts were fetched from the GitHub
 
 The current architecture moves all rendering to build time. The GitHub API is gone. Every post is a fully-formed, self-contained HTML file produced before any request is made. The browser receives a complete page from the first byte. This is the central trade-off of the project: build complexity was accepted in exchange for near-zero runtime complexity.
 
-## Documentation
+## Technical Documentation
 
+Detailed engineering documentation is available in the [/docs](./docs) directory.
 | Document | Contents |
 |---|---|
-| [**Architecture**](docs/architecture.md) | Build pipeline, template system, content model, security hardening |
-| [**Build Pipeline**](docs/build-pipeline.md) | Build steps in detail, full `dist/` output tree, error handling |
-| [**SEO & Performance**](docs/seo-strategy.md) | Meta tag strategy, sitemap, performance rationale |
-| [**Lessons Learned**](docs/lessons-learned.md) | Engineering reflections, trade-offs, roadmap |
-| [**Bug Log**](docs/bug_log.md) | Known issues, fixes, and regression notes |
+| [**Architecture**](docs/ARCHITECTURE.md) | Build pipeline, template system, content model, security hardening |
+| [**Build Pipeline**](docs/BUILD_PIPELINE.md) | Build steps in detail, full `dist/` output tree, error handling |
+| [**SEO & Performance**](docs/SEO_STRATEGY.md) | Meta tag strategy, sitemap, performance rationale |
+| [**Lessons Learned**](docs/LESSONS_LEARNED.md) | Engineering reflections, trade-offs, roadmap |
+| [**Bug Log**](docs/BUG_LOG.md) | Known issues, fixes, and regression notes |
 
 ## Features
 
@@ -141,4 +142,4 @@ The `gh-pages` branch is managed entirely by Actions - do not edit it manually.
 
 [MIT](LICENSE)
 
-**Last updated:** February 21, 2026 | Based on commit: `0910735`
+**Last updated:** February 22, 2026 | Based on commit: `0910735`
