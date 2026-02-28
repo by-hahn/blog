@@ -1,8 +1,19 @@
 # Bug Log
 
 ## Index
-- [2026-02-15] Mobile toc visibility + anchor/highlight
-- [2026-01-02] First GitHub Actions deployment (path-related fixes)
+- [[2026-02-28](#2026-02-28)] Fix theme animation + dark mode featured border
+- [[2026-02-15](#2026-02-15)] Mobile toc visibility + anchor/highlight
+- [[2026-01-02](#2026-01-02)] First GitHub Actions deployment (path-related fixes)
+
+---
+
+## 2026-02-28
+
+#### `a3a490b` — fix(css): remove stray declarations and correct dark mode featured color
+**Impact:** Theme transition animation was cut off (#2); dark mode featured section border color not applied (#4).
+
+- Removed orphaned --border declaration that broke theme animation
+- Corrected --featured hex value in dark mode
 
 ---
 
@@ -53,4 +64,4 @@ The fixes below were part of stabilizing the automated deployment workflow.
 
 ---
 
-**Last updated:** February 23, 2026 | Based on commit: `0910735`
+**Last updated:** February 28, 2026 | Based on commit: `a3a490b`
