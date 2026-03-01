@@ -140,6 +140,13 @@ The `gh-pages` branch is managed entirely by Actions - do not edit it manually.
 
 ## License
 
-[MIT](LICENSE)
+This project uses a **[split license](LICENSE)** model:
 
-**Last updated:** February 22, 2026 | Based on commit: `0910735`
+| Component | License |
+|--|--|
+| **Source Code** (`/scripts`, `/src`) | [MIT](LICENSE) – Free to use, modify, and redistribute |
+| **Blog Content & Images** (`/posts`) | [CC-BY-NC-SA 4.0](LICENSE) – Share with attribution, no commercial use |
+
+The code is open source. Blog posts and images can be shared for educational purposes with proper attribution, but cannot be used commercially without permission.
+
+**Last updated:** March 2, 2026 | Based on commit: `a3a490b`
