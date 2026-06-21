@@ -1,5 +1,115 @@
 [
   {
+    "title": "Part 1.3: The Right Place, The Wrong Way",
+    "subtitle": "Control x AI / System Response and Motion Quality",
+    "description": "This is the third article in Part 1 of the Automatic Control × AI series. The previous article, Part 1.2: The World as Equations, introduced mathematical models for physical systems and the transfer function. This article builds directly on that foundation.",
+    "tags": [
+      "automatic-control",
+      "ai",
+      "step-response",
+      "damping",
+      "overshoot",
+      "robotics"
+    ],
+    "featured": true,
+    "readingTime": "10 min",
+    "category": "posts",
+    "date": "2026-05-05",
+    "slug": "control-x-ai-series-part-1-3",
+    "permalink": "/posts/control-x-ai-series-part-1-3/",
+    "url": "https://blog.by-hahn.com/posts/control-x-ai-series-part-1-3/"
+  },
+  {
+    "title": "Part 1.2: The World as Equations",
+    "subtitle": "Control x AI / Modeling the Physical World",
+    "description": "This is the second article in Part 1 of the Automatic Control × AI series. The previous article, Part 1.1: AI Can Think. But Can It Act?, introduced the idea of feedback and why control systems exist. This article builds directly on that foundation.",
+    "tags": [
+      "automatic-control",
+      "ai",
+      "modeling",
+      "transfer-function",
+      "simulation"
+    ],
+    "featured": true,
+    "readingTime": "10 min",
+    "category": "posts",
+    "date": "2026-05-01",
+    "slug": "control-x-ai-series-part-1-2",
+    "permalink": "/posts/control-x-ai-series-part-1-2/",
+    "url": "https://blog.by-hahn.com/posts/control-x-ai-series-part-1-2/"
+  },
+  {
+    "title": "Part 1.1: AI Can Think. But Can It Act?",
+    "subtitle": "Control x AI / Why AI Needs Control Theory",
+    "description": "This is the first article in Part 1 of the Automatic Control × AI series. If you are new to the series, you might want to start with Part 0: Why I Started This Series.",
+    "tags": [
+      "automatic-control",
+      "ai",
+      "feedback",
+      "control-loop"
+    ],
+    "featured": true,
+    "readingTime": "6 min",
+    "category": "posts",
+    "date": "2026-04-26",
+    "slug": "control-x-ai-series-part-1-1",
+    "permalink": "/posts/control-x-ai-series-part-1-1/",
+    "url": "https://blog.by-hahn.com/posts/control-x-ai-series-part-1-1/"
+  },
+  {
+    "title": "Part 0: Why I Started This Series",
+    "subtitle": "Control x AI Part. 0",
+    "description": "There is a question I kept coming back to during the first few weeks of this semester.",
+    "tags": [
+      "automatic-control",
+      "ai",
+      "series-intro"
+    ],
+    "featured": true,
+    "readingTime": "3 min",
+    "category": "posts",
+    "date": "2026-04-19",
+    "slug": "control-x-ai-series-part-0",
+    "permalink": "/posts/control-x-ai-series-part-0/",
+    "url": "https://blog.by-hahn.com/posts/control-x-ai-series-part-0/"
+  },
+  {
+    "title": "How a Blog Post Actually Gets Built",
+    "subtitle": "Retrospective Series Part. 2",
+    "description": "In the last part, I talked about the decision to move all rendering to build time, and why that trade-off made sense for this project over the original prototype. The idea was to do as much work as possible before anyone visits the site, so that by the time a request arrives, every page is already fully assembled and ready to be served.",
+    "tags": [
+      "blog",
+      "ssg",
+      "retrospective",
+      "build-pipeline"
+    ],
+    "featured": false,
+    "readingTime": "10 min",
+    "category": "projects",
+    "date": "2026-03-15",
+    "slug": "retrospective-series-part-2",
+    "permalink": "/projects/retrospective-series-part-2/",
+    "url": "https://blog.by-hahn.com/projects/retrospective-series-part-2/"
+  },
+  {
+    "title": "Why I Built It From Scratch: Design and Tech Decisions",
+    "subtitle": "Retrospective Series Part. 1",
+    "description": "In the previous part of this series, I described the general arc of this project: a blog that started as a rough prototype, hit a wall, and had to be rethought from the ground up. This article is about what that rethinking actually looked like. What broke, what the alternatives were, and why I ended up building my own system instead of reaching for one that already existed.",
+    "tags": [
+      "blog",
+      "ssg",
+      "retrospective",
+      "architecture"
+    ],
+    "featured": true,
+    "readingTime": "7 min",
+    "category": "projects",
+    "date": "2026-03-08",
+    "slug": "retrospective-series-part-1",
+    "permalink": "/projects/retrospective-series-part-1/",
+    "url": "https://blog.by-hahn.com/projects/retrospective-series-part-1/"
+  },
+  {
     "title": "Test Post - Projects",
     "subtitle": "Testing project posts",
     "description": "test of by-hahn blog - projects",
@@ -45,21 +155,6 @@
     "slug": "test",
     "permalink": "/study-notes/test/",
     "url": "https://blog.by-hahn.com/study-notes/test/"
-  },
-  {
-    "title": "Test Post - Posts",
-    "subtitle": "Testing regular posts",
-    "description": "test of by-hahn blog - posts",
-    "tags": [
-      "test"
-    ],
-    "featured": false,
-    "readingTime": "1 min",
-    "category": "posts",
-    "date": "2025-04-06",
-    "slug": "test",
-    "permalink": "/posts/test/",
-    "url": "https://blog.by-hahn.com/posts/test/"
   },
   {
     "title": "Test Post - Paper Reviews",

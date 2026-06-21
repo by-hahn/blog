@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+
+    <meta name="description" content="This is the first article in Part 1 of the Automatic Control × AI series. If you are new to the series, you might want to start with Part 0: Why I Started This Series." />
+  <link rel="canonical" href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-1/" />
+  <meta property="og:title" content="Why AI Needs Control Theory: Control x AI Part 1.1" />
+  <meta property="og:description" content="This is the first article in Part 1 of the Automatic Control × AI series. If you are new to the series, you might want to start with Part 0: Why I Started This Series." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-1/" />
+    <title>Part 1.1: AI Can Think. But Can It Act?</title>
+
+    <!-- CSS file served from dist/css/main.css on build -->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- Theme Toggle Script -->
+    <script src="/js/theme.js"></script>
+
+
+    <!-- Responsive Design Breakpoints:
+    - Desktop: > 900px (2-column layout with sidebar)
+    - Tablet: 600px - 900px (1-column layout, sidebar hidden)
+    - Mobile: <= 600px (1-column layout, mobile menu visible) -->
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1><a href="/" class="title">by-hahn — Blog</a></h1>
+                <p class="lead">Byoungyoon Hahn's Blog.</p>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        </header>
+
+        <nav id="nav-menu">
+            <a class="btn" href="/activities">Activities</a>
+            <a class="btn" href="/goals">Goals</a>
+            <a class="btn" href="/paper-reviews">Paper Reviews</a>
+            <a class="btn" href="/posts">Posts</a>
+            <a class="btn" href="/projects">Projects</a>
+            <a class="btn" href="/study-notes">Study Notes</a>
+            <a class="btn" href="/guestbook">Guestbook</a>
+            <a class="btn" href="/certifications">Certifications</a>
+        </nav>
+
+        <div class="grid grid-post">
+            <main>
+                <article class="card">
+                    <h1 style="margin-top:0">Part 1.1: AI Can Think. But Can It Act?</h1>
+                    <h2 style="margin-top: 0; margin-bottom: 12px; color: var(--text-secondary); font-weight: 500; font-size: 1.1rem;">Control x AI / Why AI Needs Control Theory</h2>
+                    <div class="muted" style="margin-bottom: 16px;">2026-04-26 · 6 min</div>
+                    <!-- Mobile TOC (visible on tablet/mobile) -->
+                    <details class="mobile-toc"><summary>📑 Table of Contents</summary><ul class="toc-list"><li><a href="#intelligence-is-not-enough" class="toc-link">Intelligence Is Not Enough</a></li><li><a href="#two-ways-to-act-open-loop-and-closed-loop" class="toc-link">Two Ways to Act: Open-Loop and Closed-Loop</a></li><li><a href="#acting-without-feedback-open-loop" class="toc-link toc-sub">Acting Without Feedback: Open-Loop</a></li><li><a href="#acting-with-feedback-closed-loop" class="toc-link toc-sub">Acting With Feedback: Closed-Loop</a></li><li><a href="#feedback-is-everywhere-in-ai" class="toc-link">Feedback Is Everywhere in AI</a></li><li><a href="#reinforcement-learning" class="toc-link toc-sub">Reinforcement Learning</a></li><li><a href="#self-driving-systems" class="toc-link toc-sub">Self-Driving Systems</a></li><li><a href="#the-part-people-often-overlook" class="toc-link">The Part People Often Overlook</a></li><li><a href="#where-ai-and-control-meet" class="toc-link">Where AI and Control Meet</a></li><li><a href="#what-comes-next" class="toc-link">What Comes Next</a></li></ul></details>
+                    <div class="post-body"><p><em>This is the first article in Part 1 of the Automatic Control × AI series. If you are new to the series, you might want to start with <a href="https://blog.by-hahn.com/posts/control-x-ai-series-part-0" rel="noopener noreferrer">Part 0: Why I Started This Series</a>.</em></p>
+<hr>
+<p>Imagine a self-driving car that can see everything. Its cameras detect lane markings with perfect accuracy. Its neural network correctly identifies every pedestrian, traffic light, and road sign. The decision system says: turn left here, slow down there, stop at this intersection.</p>
+<p>Now imagine that none of those decisions actually reach the wheels.</p>
+<p>The car can perceive and think, but it cannot act. It drifts forward, unable to translate its intentions into motion. This is not just a hypothetical failure. In many ways, it is the gap that control theory exists to close.</p>
+<p>At its core, control theory is about making systems behave the way we want, even when the real world pushes back.</p>
+<p>And once I started looking at AI systems through that lens, control theory stopped feeling like a separate field entirely.</p>
+<hr>
+<h2 id="intelligence-is-not-enough">Intelligence Is Not Enough</h2>
+<p>When most people think about AI, they think about perception and decision-making. A model looks at an image and classifies it. A language model reads a sentence and generates a response. An agent observes a game state and chooses an action.</p>
+<p>These are all impressive things, and they are genuinely difficult problems to solve.</p>
+<p>But in robotics, manufacturing, aerospace, and almost any system that interacts with the physical world, there is another step after the decision itself. That step is execution. And execution is where control theory lives.</p>
+<p>A robotic arm, for example, does not simply receive a command like “move to position X” and arrive there perfectly. The arm has mass. Its joints have friction. The motors respond to electrical signals with delay and limitations. The world pushes back constantly, and if the system does not account for those dynamics, the arm may overshoot the target, oscillate back and forth, or react so slowly that it becomes unusable.</p>
+<p>This is the problem automatic control was built to solve.</p>
+<p>Not perception.<br>
+Not decision-making.<br>
+But the problem of turning decisions into reliable physical action.</p>
+<hr>
+<h2 id="two-ways-to-act-open-loop-and-closed-loop">Two Ways to Act: Open-Loop and Closed-Loop</h2>
+<p>To understand why feedback matters so much, let’s start with the simplest kind of system possible.</p>
+<h3 id="acting-without-feedback-open-loop">Acting Without Feedback: Open-Loop</h3>
+<p>Suppose you want to heat a room to exactly 72 degrees Fahrenheit. One approach is to turn on the heater for a fixed amount of time based on a rough estimate. You decide that running it for 30 minutes should be enough, and then you walk away without checking anything.</p>
+<p>This is called an <strong>open-loop system</strong>.</p>
+<p>The system receives an input, performs an action, and assumes the result will be correct. There is no feedback from the actual outcome. If the room is colder than expected, or if someone opens a window, the system has no idea.</p>
+<p>A simple toaster works this way. You set a timer, the coils heat for a fixed duration, and the bread pops up. Open-loop systems can work surprisingly well when the environment is predictable.</p>
+<p>But the real world is rarely predictable.</p>
+<h3 id="acting-with-feedback-closed-loop">Acting With Feedback: Closed-Loop</h3>
+<p>Now consider a thermostat.</p>
+<p>Instead of blindly heating the room for a fixed amount of time, the thermostat continuously measures the actual temperature. If the room is too cold, the heater turns on. If the room becomes too warm, the heater turns off.</p>
+<p>The system constantly compares reality against the target and adjusts itself accordingly.</p>
+<p>This is called a <strong>closed-loop system</strong>, also known as a feedback control system.</p>
+<hr>
+<pre><code>Observe → Compare → Correct → Repeat
+</code></pre>
+<hr>
+<p>That comparison step is everything.</p>
+<p>The difference between what you want and what the system actually produces is called the <strong>error signal</strong>. A feedback controller exists to reduce that error over time.</p>
+<p>The idea sounds simple, but once you notice feedback loops, you start seeing them everywhere.</p>
+<hr>
+<h2 id="feedback-is-everywhere-in-ai">Feedback Is Everywhere in AI</h2>
+<p>One of the reasons control theory became much more interesting to me is that feedback loops already exist in many AI systems, even if we do not always describe them that way.</p>
+<h3 id="reinforcement-learning">Reinforcement Learning</h3>
+<p>Take reinforcement learning as an example. An agent performs an action, observes the result, receives a reward signal, and adjusts its future behavior based on whether things improved or got worse.</p>
+<p>In a very real sense, the reward signal acts like an error signal. The system is continuously trying to reduce the gap between its current behavior and some desired outcome.</p>
+<p>The structure is surprisingly similar to feedback control.</p>
+<h3 id="self-driving-systems">Self-Driving Systems</h3>
+<p>The same idea appears in self-driving systems.</p>
+<p>A car observes its position relative to lane markings, computes how far it has drifted from the center, and applies a steering correction. That correction changes the vehicle’s position, the sensors observe the updated state, and the process repeats continuously.</p>
+<hr>
+<pre><code>Perception → Decision → Control
+</code></pre>
+<hr>
+<p>The perception system detects the environment. The decision system determines the intended behavior. But the control system is what translates that intention into steering angles, motor commands, and physical movement.</p>
+<p>And this turns out to be much harder than it sounds.</p>
+<p>If the feedback loop is poorly designed, the car may overcorrect repeatedly, weaving from side to side instead of driving smoothly. Even perfect perception does not guarantee stable behavior.</p>
+<p>This is because the physical world introduces dynamics that software alone cannot ignore. Cars have momentum. Steering systems have delay. Tires interact with the road differently depending on speed, weather, and surface conditions.</p>
+<p>The intelligence may exist entirely in software, but the behavior emerges from physics.</p>
+<hr>
+<h2 id="the-part-people-often-overlook">The Part People Often Overlook</h2>
+<p>There is a reason control theory often receives less attention in discussions about AI.</p>
+<p>Decision-making is visible. You can watch a model classify an image or generate text. You can compare benchmark scores and demos. The outputs are easy to show.</p>
+<p>Control is mostly invisible.</p>
+<p>When it works, systems simply behave the way you expect. A robot arm moves smoothly. A drone stabilizes itself. A vehicle stays centered in its lane.</p>
+<p>When it fails, the failure often looks mechanical rather than computational. The arm shakes. The drone drifts. The car oscillates.</p>
+<p>But that invisibility is part of what makes control theory so interesting to me. It is the layer of the system that has to negotiate directly with reality.</p>
+<p>A machine learning model can operate on clean datasets and abstract representations. A controller, however, has to deal with friction, inertia, delay, uncertainty, and noise in real time.</p>
+<p>And no matter how capable AI becomes, physical systems will still have to obey physics.</p>
+<hr>
+<h2 id="where-ai-and-control-meet">Where AI and Control Meet</h2>
+<p>When I first started studying AI, I assumed control theory belonged to a completely different world. It felt mechanical and distant from the kinds of problems I cared about.</p>
+<p>Over time, that distinction started to disappear.</p>
+<p>AI without control is a system that can think but cannot act. Control without intelligence is a system that can act but cannot adapt.</p>
+<p>The systems that actually function in complex environments need both.</p>
+<p>And the more I study physical AI systems, robotics, and autonomous systems, the more it feels like the boundary between AI and control theory is becoming increasingly difficult to separate.</p>
+<hr>
+<h2 id="what-comes-next">What Comes Next</h2>
+<p>If control theory is about making physical systems behave the way we want, then the next question becomes unavoidable:</p>
+<p>How do we mathematically describe the behavior of those systems in the first place?</p>
+<p>Before we can design a controller for a robot arm, a drone, or even a simple motor, we first need a model of how the system responds to forces, signals, and movement over time.</p>
+<p>That is what the next article explores.</p>
+<p>And surprisingly, many systems that seem completely unrelated physically end up looking mathematically similar once you start modeling them carefully.</p>
+</div>
+                </article>
+            </main>
+
+            <aside class="post-aside">
+                <div class="toc-wrap">
+                    <h4 class="toc-title">Contents</h4>
+                    <ul class="toc-list"><li><a href="#intelligence-is-not-enough" class="toc-link">Intelligence Is Not Enough</a></li><li><a href="#two-ways-to-act-open-loop-and-closed-loop" class="toc-link">Two Ways to Act: Open-Loop and Closed-Loop</a></li><li><a href="#acting-without-feedback-open-loop" class="toc-link toc-sub">Acting Without Feedback: Open-Loop</a></li><li><a href="#acting-with-feedback-closed-loop" class="toc-link toc-sub">Acting With Feedback: Closed-Loop</a></li><li><a href="#feedback-is-everywhere-in-ai" class="toc-link">Feedback Is Everywhere in AI</a></li><li><a href="#reinforcement-learning" class="toc-link toc-sub">Reinforcement Learning</a></li><li><a href="#self-driving-systems" class="toc-link toc-sub">Self-Driving Systems</a></li><li><a href="#the-part-people-often-overlook" class="toc-link">The Part People Often Overlook</a></li><li><a href="#where-ai-and-control-meet" class="toc-link">Where AI and Control Meet</a></li><li><a href="#what-comes-next" class="toc-link">What Comes Next</a></li></ul>
+                    <div class="toc-nav">
+                        <a href="/posts/" class="btn">← Posts</a>
+                        <a href="/" class="btn">← Home</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Menu (shown on screens <= 600px) -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <h2>Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">×</button>
+            </div>
+            <div class="mobile-menu-content">
+                <div class="card">
+                    <h4 style="margin:0 0 8px">About</h4>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
+                        Posts URL: /category/slug/</p>
+                </div>
+                <ul style="margin-top:16px;">
+                    <li><a href="/activities">Activities</a></li>
+                    <li><a href="/goals">Goals</a></li>
+                    <li><a href="/paper-reviews">Paper Reviews</a></li>
+                    <li><a href="/posts">Posts</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/study-notes">Study Notes</a></li>
+                    <li><a href="/guestbook">Guestbook</a></li>
+                    <li><a href="/certifications">Certifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="muted">
+                © 2025-2026 by-hahn · Research Notes & Achievements
+                <br>
+                Contact: seehahn@knu.ac.kr |
+                <a href="https://github.com/by-hahn" target="_blank">GitHub</a> |
+                <a href="https://www.instagram.com/by_hahn/" target="_blank">Instagram</a> |
+                <a href="https://www.linkedin.com/in/byoungyoon-hahn/" target="_blank">LinkedIn</a> |
+                <a href="https://by-hahn.com/" target="_blank">Portfolio</a> |
+                <a href="#" id="theme-toggle" aria-label="Toggle theme">🌙</a>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <!-- Mobile Navigation toggle -->
+    <script>
+        (function () {
+            const navToggle = document.getElementById('nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+            function toggleMobileMenu(open) {
+                if (open) {
+                    mobileMenu.classList.add('open');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (navToggle && mobileMenu && mobileMenuOverlay) {
+                navToggle.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.contains('open');
+                    toggleMobileMenu(!isOpen);
+                });
+            }
+
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+        })();
+    </script>
+
+    <!-- TOC Scroll Spy -->
+    <script>
+        (function () {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            if (!tocLinks.length) return;
+
+            const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+            const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
+            if (!headings.length) return;
+
+            let currentId = '';
+            let ticking = false;
+            const OFFSET = 40; // px from top to consider a heading "passed"
+
+            function setActive(id) {
+                if (id === currentId) return;
+                currentId = id;
+                tocLinks.forEach(link => {
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            function updateActiveHeading() {
+                ticking = false;
+
+                // At bottom of page → activate last heading
+                const scrollBottom = window.innerHeight + window.scrollY;
+                const docHeight = document.documentElement.scrollHeight;
+                if (docHeight - scrollBottom < 60) {
+                    setActive(headings[headings.length - 1].id);
+                    return;
+                }
+
+                // Find the last heading whose top has scrolled past OFFSET
+                let activeId = '';
+                for (let i = 0; i < headings.length; i++) {
+                    const rect = headings[i].getBoundingClientRect();
+                    if (rect.top <= OFFSET) {
+                        activeId = headings[i].id;
+                    } else {
+                        break;
+                    }
+                }
+
+                setActive(activeId || headings[0].id);
+            }
+
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(updateActiveHeading);
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            updateActiveHeading(); // initial state
+        })();
+    </script>
+</body>
+
+</html>

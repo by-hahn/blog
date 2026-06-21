@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+
+    <meta name="description" content="This is the third article in Part 1 of the Automatic Control × AI series. The previous article, Part 1.2: The World as Equations, introduced mathematical models for physical systems and the transfer function. This article builds directly on that foundation." />
+  <link rel="canonical" href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-3/" />
+  <meta property="og:title" content="System Response and Motion Quality: Control x AI Part 1.3" />
+  <meta property="og:description" content="This is the third article in Part 1 of the Automatic Control × AI series. The previous article, Part 1.2: The World as Equations, introduced mathematical models for physical systems and the transfer function. This article builds directly on that foundation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-3/" />
+    <title>Part 1.3: The Right Place, The Wrong Way</title>
+
+    <!-- CSS file served from dist/css/main.css on build -->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- Theme Toggle Script -->
+    <script src="/js/theme.js"></script>
+
+
+    <!-- Responsive Design Breakpoints:
+    - Desktop: > 900px (2-column layout with sidebar)
+    - Tablet: 600px - 900px (1-column layout, sidebar hidden)
+    - Mobile: <= 600px (1-column layout, mobile menu visible) -->
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1><a href="/" class="title">by-hahn — Blog</a></h1>
+                <p class="lead">Byoungyoon Hahn's Blog.</p>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        </header>
+
+        <nav id="nav-menu">
+            <a class="btn" href="/activities">Activities</a>
+            <a class="btn" href="/goals">Goals</a>
+            <a class="btn" href="/paper-reviews">Paper Reviews</a>
+            <a class="btn" href="/posts">Posts</a>
+            <a class="btn" href="/projects">Projects</a>
+            <a class="btn" href="/study-notes">Study Notes</a>
+            <a class="btn" href="/guestbook">Guestbook</a>
+            <a class="btn" href="/certifications">Certifications</a>
+        </nav>
+
+        <div class="grid grid-post">
+            <main>
+                <article class="card">
+                    <h1 style="margin-top:0">Part 1.3: The Right Place, The Wrong Way</h1>
+                    <h2 style="margin-top: 0; margin-bottom: 12px; color: var(--text-secondary); font-weight: 500; font-size: 1.1rem;">Control x AI / System Response and Motion Quality</h2>
+                    <div class="muted" style="margin-bottom: 16px;">2026-05-05 · 10 min</div>
+                    <!-- Mobile TOC (visible on tablet/mobile) -->
+                    <details class="mobile-toc"><summary>📑 Table of Contents</summary><ul class="toc-list"><li><a href="#asking-a-system-a-question" class="toc-link">Asking a System a Question</a></li><li><a href="#the-four-things-we-look-at" class="toc-link">The Four Things We Look At</a></li><li><a href="#rise-time" class="toc-link toc-sub">Rise Time</a></li><li><a href="#overshoot" class="toc-link toc-sub">Overshoot</a></li><li><a href="#settling-time" class="toc-link toc-sub">Settling Time</a></li><li><a href="#steady-state-error" class="toc-link toc-sub">Steady-State Error</a></li><li><a href="#the-shape-behind-everything-damping" class="toc-link">The Shape Behind Everything: Damping</a></li><li><a href="#underdamped-fast-but-oscillatory" class="toc-link toc-sub">Underdamped: Fast but Oscillatory</a></li><li><a href="#critically-damped-the-boundary-case" class="toc-link toc-sub">Critically Damped: The Boundary Case</a></li><li><a href="#overdamped-slow-but-non-oscillatory" class="toc-link toc-sub">Overdamped: Slow but Non-Oscillatory</a></li><li><a href="#the-underlying-equation" class="toc-link">The Underlying Equation</a></li><li><a href="#what-this-has-to-do-with-ai" class="toc-link">What This Has to Do with AI</a></li><li><a href="#the-problem-of-reward-design" class="toc-link toc-sub">The Problem of Reward Design</a></li><li><a href="#motion-quality-as-a-design-constraint" class="toc-link toc-sub">Motion Quality as a Design Constraint</a></li><li><a href="#what-comes-next" class="toc-link">What Comes Next</a></li></ul></details>
+                    <div class="post-body"><p><em>This is the third article in Part 1 of the Automatic Control × AI series. The previous article, <a href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-2" rel="noopener noreferrer">Part 1.2: The World as Equations</a>, introduced mathematical models for physical systems and the transfer function. This article builds directly on that foundation.</em></p>
+<hr>
+<p>A robotic arm is about to place a fragile component onto a circuit board. The control system sends a command: move to position X. The arm accelerates, reaches the target, and then keeps going. It overshoots by a few millimeters, swings back past the target, overshoots again in the other direction, and eventually settles into the correct position after several oscillations. The component lands crooked, if it lands at all.</p>
+<p>This is not a failure of perception. The system knew exactly where it needed to go. It is not a failure of decision-making either. The command was correct. The failure was in the motion itself. The system arrived at the right destination in entirely the wrong way.</p>
+<p>Coming from an AI background, my first instinct was to think of this as a solved problem. A system receives a target, reaches it, done. In most of what I had studied up to that point, when “path” came up at all, it meant something computational: finding the shortest route between nodes, minimizing the number of steps to convergence, reducing the cost of getting from A to B. The physical trajectory itself was never really the concern, because in software, how you arrive at an answer leaves no mark on anything. The answer is either right or it is not.</p>
+<p>What I did not fully appreciate until studying control systems is that in physical systems, the path is not an abstraction. It is real motion, unfolding in time, subject to forces and inertia and the limits of hardware. A joint that overshoots does not simply arrive at the wrong position for a moment and then correct itself cleanly. It carries momentum. It stresses mechanical components. It may interfere with whatever the system is supposed to be doing. The motion itself has consequences, and that was a more unfamiliar way of thinking than I expected.</p>
+<hr>
+<h2 id="asking-a-system-a-question">Asking a System a Question</h2>
+<p>One of the most useful ways to understand how a system behaves is to give it a specific kind of input and observe what happens. The input most commonly used in control theory is called the <strong>step input</strong>.</p>
+<p>A step input is simple: the signal is zero, then at some moment, it instantly jumps to a fixed value and stays there. If you are controlling the position of a motor shaft, a step input might represent a sudden command to move from zero degrees to ninety degrees. If you are controlling a temperature, it might represent a target that suddenly changes from room temperature to a new setpoint.</p>
+<p>The reason engineers use step inputs so often is that they are standardized and easy to compare. Any system you want to analyze gets the same kind of question, and the response it produces tells you a great deal about its character.</p>
+<p>The shape of that response is called the <strong>step response</strong>, and it can look dramatically different depending on the system. Some systems accelerate smoothly and level off just below the target. Others race past the target, swing back, and oscillate several times before settling. Others climb so slowly that reaching the target takes far longer than it should. And some never actually reach the target at all.</p>
+<p>Each of those patterns corresponds to real behavior in real systems. Understanding what they mean is the point of this article.</p>
+<hr>
+<h2 id="the-four-things-we-look-at">The Four Things We Look At</h2>
+<p>When engineers analyze a step response, they tend to focus on four characteristics. Each one captures something distinct about how the system behaves.</p>
+<h3 id="rise-time">Rise Time</h3>
+<p>The <strong>rise time</strong> is how quickly the system climbs from its initial state toward the target. More precisely, it is usually defined as the time it takes for the response to go from ten percent to ninety percent of the target value, though this convention can vary slightly depending on the context.</p>
+<p>A fast response is often desirable, but speed alone says very little about whether the motion is actually usable. A robot joint that reaches its target angle in half the time but overshoots and oscillates before settling may be slower in practice than one that rises more steadily, because the downstream task cannot begin until the motion has actually stopped.</p>
+<h3 id="overshoot">Overshoot</h3>
+<p><strong>Overshoot</strong> is how far the system exceeds its target before eventually settling. It is typically expressed as a percentage of the target value.</p>
+<p>If a motor is commanded to reach ninety degrees and momentarily reaches one hundred and eight degrees before settling, the overshoot is twenty percent. For some applications, a small amount of overshoot is acceptable. For others, it is not acceptable at all. A robot placing a fragile component, a surgical tool, a satellite adjusting its orientation in space: in systems like these, overshoot is not just a performance concern. It is a safety concern.</p>
+<h3 id="settling-time">Settling Time</h3>
+<p>The <strong>settling time</strong> is how long the system takes to stay close enough to the target that we consider it settled. Close enough is usually defined as within some tolerance, often two or five percent of the target value, and the system has to stay within that range from then on rather than just passing through it.</p>
+<p>This is different from rise time. A system can reach the target quickly but then oscillate around it for a long time before finally settling. In that case, the rise time is short but the settling time is long. What matters for practical use is often settling time, because a system that keeps swinging back and forth is not actually doing its job, even if it got close quickly.</p>
+<h3 id="steady-state-error">Steady-State Error</h3>
+<p>A fourth characteristic worth naming is <strong>steady-state error</strong>: the gap that remains between the target and where the system actually ends up, even after all the oscillation is over. Unlike rise time or overshoot, this is not a question of how the system gets to the target. It is a question of whether the system ever truly arrives at all. That distinction matters, and I will return to it in a later article.</p>
+<hr>
+<h2 id="the-shape-behind-everything-damping">The Shape Behind Everything: Damping</h2>
+<p>What determines whether a system overshoots a lot, a little, or not at all? Why do some systems oscillate while others slide smoothly into position? The answer involves a quantity called the <strong>damping ratio</strong>, which I will denote as $\zeta$ (the Greek letter zeta).</p>
+<p>This quantity, along with the natural frequency of the system, shapes almost everything about the step response for a standard second-order system. And the best way to understand what it means is to look at what happens when it takes different values.</p>
+<p>The term comes directly from the <a href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-2/#starting-simple-mass-spring-and-damper" rel="noopener noreferrer">mass-spring-damper model introduced in the previous article</a>. The damping coefficient, which represented how much the physical damper resisted rapid motion, is the physical origin of this idea. Damping ratio is the normalized version of that concept: a dimensionless quantity that tells you how much dissipation exists in the system relative to what would be needed to prevent any oscillation at all.</p>
+<h3 id="underdamped-fast-but-oscillatory">Underdamped: Fast but Oscillatory</h3>
+<p>When the damping ratio is between zero and one ($0 &lt; \zeta &lt; 1$), the system is called <strong>underdamped</strong>. This is the robot arm that overshoots and oscillates before settling.</p>
+<p>The response rises quickly, crosses the target, swings back past it, crosses again, and so on, with each oscillation slightly smaller than the last. The system eventually settles, but the path to settling is unsteady. A lower damping ratio means more oscillation and more overshoot.</p>
+<p>In many applications, some degree of underdamping is accepted in exchange for a fast rise time. The trade-off is real and unavoidable.</p>
+<h3 id="critically-damped-the-boundary-case">Critically Damped: The Boundary Case</h3>
+<p>When the damping ratio is exactly one ($\zeta = 1$), the system is called <strong>critically damped</strong>. This represents the boundary between oscillatory and non-oscillatory behavior: the fastest response that reaches the target without crossing it.</p>
+<p>The response climbs toward the target, decelerates as it approaches, and settles without any ringing. Beyond this point, adding more damping only makes the system slower.</p>
+<p>In practice, achieving perfect critical damping is difficult because it requires knowing the system’s parameters precisely and tuning against them. Real systems are rarely sitting exactly at this boundary.</p>
+<h3 id="overdamped-slow-but-non-oscillatory">Overdamped: Slow but Non-Oscillatory</h3>
+<p>When the damping ratio is greater than one ($\zeta &gt; 1$), the system is called <strong>overdamped</strong>. The response climbs toward the target without overshooting, but more slowly than the critically damped case.</p>
+<p>An overdamped system sacrifices speed in exchange for a guaranteed absence of oscillation. That trade-off can be worthwhile when overshoot would cause damage or when the cost of slow motion is lower than the cost of any ringing at all. A heavily overdamped system might be perfectly safe but frustratingly slow to use.</p>
+<hr>
+<h2 id="the-underlying-equation">The Underlying Equation</h2>
+<p>These three behaviors all come from the same mathematical framework introduced in the <a href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-2/#from-differential-equations-to-transfer-functions" rel="noopener noreferrer">previous article</a>. The transfer function for a standard second-order system can be written as:</p>
+<p>$
+G(s) = \frac{\omega_n^2}{s^2 + 2\zeta\omega_n s + \omega_n^2}
+$</p>
+<p>Where $\omega_n$ is the <strong>natural frequency</strong> of the system and $\zeta$ is the damping ratio. The natural frequency tells you how fast the system would oscillate if there were no damping at all, like a pendulum swinging freely. The damping ratio tells you how quickly those oscillations lose energy. Neither parameter is meaningful in isolation: the same damping ratio on a very fast system produces very different behavior than on a slow one.</p>
+<p>Together, these two parameters fully determine the step response behavior for this class of systems. For standard second-order systems, rise time, overshoot, and settling time can all be approximated from $\omega_n$ and $\zeta$ alone. The mechanical or electrical details of a specific physical system matter for calculating what those values actually are, but once you have them, the shape of the response follows directly.</p>
+<hr>
+<h2 id="what-this-has-to-do-with-ai">What This Has to Do with AI</h2>
+<p>When I first encountered these response metrics, I thought of them as a purely mechanical concern. But the more I have looked at AI systems that interact with the physical world, the more I see the same trade-offs appearing in different forms.</p>
+<h3 id="the-problem-of-reward-design">The Problem of Reward Design</h3>
+<p>In reinforcement learning (RL), an agent learns a policy by receiving rewards for behavior that achieves a goal. The design of that reward function has an enormous effect on the kind of behavior that emerges.</p>
+<p>Suppose you are training a robotic arm to move to a target position. If you only reward the agent for reaching the correct position, without penalizing how it gets there, the resulting policy might be fast but highly oscillatory. The arm thrashes and overshoots because nothing in the training signal told it that overshooting was bad. From the reward function’s perspective, reaching the position at all was the only thing that mattered.</p>
+<p>To get behavior that resembles a well-damped response, you often have to encode something like “settle smoothly” into the reward function directly. This might mean penalizing large velocities near the target, penalizing deviation from the target over time, or penalizing the total energy used during motion. In some sense, this begins to resemble the same trade-off a classical control engineer faces when tuning damping behavior: speed versus smoothness, and the cost of getting the balance wrong.</p>
+<p>There is a practical reason this matters beyond aesthetics. A policy that looks successful in simulation can become problematic on real hardware if its motion is too aggressive or oscillatory. Actuators have limits. Joints that are commanded to reverse direction rapidly can saturate or wear out. A policy that chatters around the target, switching back and forth at high frequency, might achieve a good average position while causing mechanical stress that a classical controller would never produce. This gap between simulation performance and real-world behavior is a well-known problem in robotics, often called <strong>sim-to-real transfer</strong>, and the quality of learned motion is one of the places where it shows up most clearly.</p>
+<h3 id="motion-quality-as-a-design-constraint">Motion Quality as a Design Constraint</h3>
+<p>There is a broader point worth making. The step response metrics described in this article represent a vocabulary for describing the quality of motion, not just whether a system reaches its goal, but how it moves while doing so.</p>
+<p>This vocabulary turns out to be directly useful when thinking about what to ask of a learned policy. A rehabilitation robot needs smooth trajectories because oscillatory motion causes discomfort. A manufacturing arm needs short settling times because it repeats the same motion hundreds of times per minute. A drone carrying fragile cargo needs minimal overshoot near the endpoint because the payload does not tolerate sudden reversals.</p>
+<p>In each case, the performance criteria are not just “did it reach the target” but “how did it get there.” Control theory has been formalizing that question for decades. The more physical AI systems need to meet real-world deployment standards, the more that same vocabulary becomes relevant for evaluating what a learned policy is actually doing.</p>
+<hr>
+<h2 id="what-comes-next">What Comes Next</h2>
+<p>Understanding how a system responds to a command tells us a lot. But there is a deeper question that the step response alone cannot answer.</p>
+<p>What if the system does not just oscillate a little and settle, but oscillates more and more without ever stopping? What if increasing speed, load, or gain causes the system to completely lose control, not just undershoot or overshoot, but diverge entirely?</p>
+<p>That is the question of stability. And it turns out that a system can appear perfectly well-behaved in some conditions and then become completely unstable in others, sometimes with almost no warning.</p>
+<p>That is where the next article begins.</p>
+</div>
+                </article>
+            </main>
+
+            <aside class="post-aside">
+                <div class="toc-wrap">
+                    <h4 class="toc-title">Contents</h4>
+                    <ul class="toc-list"><li><a href="#asking-a-system-a-question" class="toc-link">Asking a System a Question</a></li><li><a href="#the-four-things-we-look-at" class="toc-link">The Four Things We Look At</a></li><li><a href="#rise-time" class="toc-link toc-sub">Rise Time</a></li><li><a href="#overshoot" class="toc-link toc-sub">Overshoot</a></li><li><a href="#settling-time" class="toc-link toc-sub">Settling Time</a></li><li><a href="#steady-state-error" class="toc-link toc-sub">Steady-State Error</a></li><li><a href="#the-shape-behind-everything-damping" class="toc-link">The Shape Behind Everything: Damping</a></li><li><a href="#underdamped-fast-but-oscillatory" class="toc-link toc-sub">Underdamped: Fast but Oscillatory</a></li><li><a href="#critically-damped-the-boundary-case" class="toc-link toc-sub">Critically Damped: The Boundary Case</a></li><li><a href="#overdamped-slow-but-non-oscillatory" class="toc-link toc-sub">Overdamped: Slow but Non-Oscillatory</a></li><li><a href="#the-underlying-equation" class="toc-link">The Underlying Equation</a></li><li><a href="#what-this-has-to-do-with-ai" class="toc-link">What This Has to Do with AI</a></li><li><a href="#the-problem-of-reward-design" class="toc-link toc-sub">The Problem of Reward Design</a></li><li><a href="#motion-quality-as-a-design-constraint" class="toc-link toc-sub">Motion Quality as a Design Constraint</a></li><li><a href="#what-comes-next" class="toc-link">What Comes Next</a></li></ul>
+                    <div class="toc-nav">
+                        <a href="/posts/" class="btn">← Posts</a>
+                        <a href="/" class="btn">← Home</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Menu (shown on screens <= 600px) -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <h2>Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">×</button>
+            </div>
+            <div class="mobile-menu-content">
+                <div class="card">
+                    <h4 style="margin:0 0 8px">About</h4>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
+                        Posts URL: /category/slug/</p>
+                </div>
+                <ul style="margin-top:16px;">
+                    <li><a href="/activities">Activities</a></li>
+                    <li><a href="/goals">Goals</a></li>
+                    <li><a href="/paper-reviews">Paper Reviews</a></li>
+                    <li><a href="/posts">Posts</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/study-notes">Study Notes</a></li>
+                    <li><a href="/guestbook">Guestbook</a></li>
+                    <li><a href="/certifications">Certifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="muted">
+                © 2025-2026 by-hahn · Research Notes & Achievements
+                <br>
+                Contact: seehahn@knu.ac.kr |
+                <a href="https://github.com/by-hahn" target="_blank">GitHub</a> |
+                <a href="https://www.instagram.com/by_hahn/" target="_blank">Instagram</a> |
+                <a href="https://www.linkedin.com/in/byoungyoon-hahn/" target="_blank">LinkedIn</a> |
+                <a href="https://by-hahn.com/" target="_blank">Portfolio</a> |
+                <a href="#" id="theme-toggle" aria-label="Toggle theme">🌙</a>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <!-- Mobile Navigation toggle -->
+    <script>
+        (function () {
+            const navToggle = document.getElementById('nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+            function toggleMobileMenu(open) {
+                if (open) {
+                    mobileMenu.classList.add('open');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (navToggle && mobileMenu && mobileMenuOverlay) {
+                navToggle.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.contains('open');
+                    toggleMobileMenu(!isOpen);
+                });
+            }
+
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+        })();
+    </script>
+
+    <!-- TOC Scroll Spy -->
+    <script>
+        (function () {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            if (!tocLinks.length) return;
+
+            const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+            const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
+            if (!headings.length) return;
+
+            let currentId = '';
+            let ticking = false;
+            const OFFSET = 40; // px from top to consider a heading "passed"
+
+            function setActive(id) {
+                if (id === currentId) return;
+                currentId = id;
+                tocLinks.forEach(link => {
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            function updateActiveHeading() {
+                ticking = false;
+
+                // At bottom of page → activate last heading
+                const scrollBottom = window.innerHeight + window.scrollY;
+                const docHeight = document.documentElement.scrollHeight;
+                if (docHeight - scrollBottom < 60) {
+                    setActive(headings[headings.length - 1].id);
+                    return;
+                }
+
+                // Find the last heading whose top has scrolled past OFFSET
+                let activeId = '';
+                for (let i = 0; i < headings.length; i++) {
+                    const rect = headings[i].getBoundingClientRect();
+                    if (rect.top <= OFFSET) {
+                        activeId = headings[i].id;
+                    } else {
+                        break;
+                    }
+                }
+
+                setActive(activeId || headings[0].id);
+            }
+
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(updateActiveHeading);
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            updateActiveHeading(); // initial state
+        })();
+    </script>
+</body>
+
+</html>

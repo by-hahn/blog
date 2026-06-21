@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+
+    <meta name="description" content="In the previous part of this series, I described the general arc of this project: a blog that started as a rough prototype, hit a wall, and had to be rethought from the ground up. This article is about what that rethinking actually looked like. What broke, what the alternatives were, and why I ended up building my own system instead of reaching for one that already existed." />
+  <link rel="canonical" href="https://blog.by-hahn.com/projects/retrospective-series-part-1/" />
+  <meta property="og:title" content="Why I Built My Blog From Scratch: Design and Tech Decisions" />
+  <meta property="og:description" content="In the previous part of this series, I described the general arc of this project: a blog that started as a rough prototype, hit a wall, and had to be rethought from the ground up. This article is about what that rethinking actually looked like. What broke, what the alternatives were, and why I ended up building my own system instead of reaching for one that already existed." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://blog.by-hahn.com/projects/retrospective-series-part-1/" />
+    <title>Why I Built It From Scratch: Design and Tech Decisions</title>
+
+    <!-- CSS file served from dist/css/main.css on build -->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- Theme Toggle Script -->
+    <script src="/js/theme.js"></script>
+
+
+    <!-- Responsive Design Breakpoints:
+    - Desktop: > 900px (2-column layout with sidebar)
+    - Tablet: 600px - 900px (1-column layout, sidebar hidden)
+    - Mobile: <= 600px (1-column layout, mobile menu visible) -->
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1><a href="/" class="title">by-hahn — Blog</a></h1>
+                <p class="lead">Byoungyoon Hahn's Blog.</p>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        </header>
+
+        <nav id="nav-menu">
+            <a class="btn" href="/activities">Activities</a>
+            <a class="btn" href="/goals">Goals</a>
+            <a class="btn" href="/paper-reviews">Paper Reviews</a>
+            <a class="btn" href="/posts">Posts</a>
+            <a class="btn" href="/projects">Projects</a>
+            <a class="btn" href="/study-notes">Study Notes</a>
+            <a class="btn" href="/guestbook">Guestbook</a>
+            <a class="btn" href="/certifications">Certifications</a>
+        </nav>
+
+        <div class="grid grid-post">
+            <main>
+                <article class="card">
+                    <h1 style="margin-top:0">Why I Built It From Scratch: Design and Tech Decisions</h1>
+                    <h2 style="margin-top: 0; margin-bottom: 12px; color: var(--text-secondary); font-weight: 500; font-size: 1.1rem;">Retrospective Series Part. 1</h2>
+                    <div class="muted" style="margin-bottom: 16px;">2026-03-08 · 7 min</div>
+                    <!-- Mobile TOC (visible on tablet/mobile) -->
+                    <details class="mobile-toc"><summary>📑 Table of Contents</summary><ul class="toc-list"><li><a href="#the-first-version-and-why-it-did-not-last" class="toc-link">The First Version, and Why It Did Not Last</a></li><li><a href="#three-problems-that-could-not-be-ignored" class="toc-link">Three Problems That Could Not Be Ignored</a></li><li><a href="#search-visibility" class="toc-link toc-sub">Search visibility</a></li><li><a href="#api-rate-limits" class="toc-link toc-sub">API rate limits</a></li><li><a href="#load-time" class="toc-link toc-sub">Load time</a></li><li><a href="#what-static-site-generation-actually-means" class="toc-link">What Static Site Generation Actually Means</a></li><li><a href="#why-not-just-use-an-existing-tool" class="toc-link">Why Not Just Use an Existing Tool</a></li><li><a href="#where-the-complexity-ended-up" class="toc-link">Where the Complexity Ended Up</a></li><li><a href="#from-markdown-to-html-coming-next" class="toc-link">From Markdown to HTML (Coming Next)</a></li></ul></details>
+                    <div class="post-body"><p>In <a href="https://blog.by-hahn.com/projects/retrospective-series-part-0/" rel="noopener noreferrer">the previous part of this series</a>, I described the general arc of this project: a blog that started as a rough prototype, hit a wall, and had to be rethought from the ground up. This article is about what that rethinking actually looked like. What broke, what the alternatives were, and why I ended up building my own system instead of reaching for one that already existed.</p>
+<hr>
+<h2 id="the-first-version-and-why-it-did-not-last">The First Version, and Why It Did Not Last</h2>
+<p>The first version of this blog was built around a simple idea. Blog posts would live as Markdown files in a GitHub repository. When someone visited the site, the browser would fetch those files through the GitHub API*, convert them from Markdown to HTML on the spot, and inject them into the page.</p>
+<p>It worked. I had posts loading, pages rendering, and a site that looked functional enough to call a prototype.</p>
+<p>But it was doing something that mattered a great deal: <strong>it was waiting until a visitor arrived before doing any work at all.</strong></p>
+<p>That sounds like a minor detail. In practice, it caused three distinct problems.</p>
+<p>*API (Application Programming Interface): a way for one program to request data or services from another service over the internet.</p>
+<hr>
+<h2 id="three-problems-that-could-not-be-ignored">Three Problems That Could Not Be Ignored</h2>
+<h3 id="search-visibility">Search visibility</h3>
+<p>When a search engine like Google visits a webpage, it sends an automated crawler to read the page’s content. What matters is the HTML that already exists when the request is made.</p>
+<p>With the first version of this blog, the crawler would initially see an empty shell: a loading spinner, minimal markup, and JavaScript that would fetch the actual post content from the GitHub API after the page loaded. Modern crawlers can execute some JavaScript, but relying entirely on client-side rendering still creates major indexing and reliability problems compared to serving complete HTML directly.</p>
+<p><strong>A crawler that cannot reliably access your content cannot reliably index it.</strong> The posts existed, but to a search engine, they were simply not there.</p>
+<p>This is what people mean when they talk about SEO (Search Engine Optimization) being “fundamentally broken” for certain architectural choices. The issue is not a missing setting or a configuration tweak. The content simply was not available in a dependable way at the moment it needed to be read.</p>
+<h3 id="api-rate-limits">API rate limits</h3>
+<p>The GitHub API is not meant to serve a public website’s content. It is a tool for developers accessing repository data programmatically. And like most APIs, it has rate limits: a ceiling on how many requests can be made in a given period of time.</p>
+<p>For a blog with very few visitors and only a handful of posts, this would probably never come up. The site would look perfectly stable. But the moment traffic spikes, or someone shares a post, or a script repeatedly loads the page, that ceiling becomes real. Requests start failing. Posts stop loading. The site becomes unreliable in exactly the situation when it should be most reliable.</p>
+<p>Building a site on top of a third-party service’s API and hoping it will behave like infrastructure is a fragile bet. I did not want the blog’s availability to depend on whether GitHub happened to be having a good day.</p>
+<h3 id="load-time">Load time</h3>
+<p>The third problem was performance. And it was not just about individual posts loading slowly. The bigger issue was the homepage.</p>
+<p>With only a few posts, the delay might be barely noticeable. But the homepage was not fetching one post. It fetched every post in the repository through the GitHub API, sorted them by date, grouped them by category, and built the index listing on the page. All of that work happened inside the visitor’s browser, on their device, after they had already arrived.</p>
+<p>This meant two things. First, the homepage could not display anything meaningful until every one of those requests had completed. The more posts existed, the slower this would get over time. Second, the work was being done by the visitor’s computer, not a server. A device on a slow connection, or an older phone, would feel every bit of that cost.</p>
+<p>Even on a fast connection this was noticeable. The issue was not the connection speed. It was the decision to defer all of this work to the moment someone arrived, and then hand the bill to the visitor.</p>
+<hr>
+<h2 id="what-static-site-generation-actually-means">What Static Site Generation Actually Means</h2>
+<p>The approach I moved to has a name: <strong>Static Site Generation</strong>, or SSG. A Static Site Generator takes content files and converts them into finished HTML pages before anyone visits the site. That is what I ended up writing from scratch. The idea is almost the opposite of what I had before.</p>
+<p>Instead of waiting for a visitor to arrive and then assembling the page, all of that work happens in advance, in a step called the <strong>build</strong>. Every time I push a change to the repository, a build runs automatically: a custom JavaScript script, <code>build.js</code>, reads every Markdown file, converts it to HTML, and writes out finished, complete HTML files into an output folder. By the time anyone visits the site, those files already exist. The server’s only job is to hand them over. The details of how that script actually works are what <a href="https://blog.by-hahn.com/projects/retrospective-series-part-2/" rel="noopener noreferrer">the next article</a> covers.</p>
+<p>The important part is not just the HTML itself, but <em>when</em> that HTML gets produced. With the first version of the blog, pages only came together after a visitor arrived. With static site generation, the work happens earlier, during the build. By the time someone visits the site, the finished HTML already exists and is ready to be served immediately.</p>
+<p>All three problems share the same source. <strong>The work is done before anyone arrives.</strong> A crawler that arrives finds everything already in place. The GitHub API is no longer part of the picture, because nothing calls it at runtime. And the homepage no longer asks the visitor’s device to do anything. The sorted post list, the category index, the reading times, all of it was calculated once during the build and is ready to be delivered as-is.</p>
+<p><strong>Every page is now ready before anyone asks for it.</strong></p>
+<hr>
+<h2 id="why-not-just-use-an-existing-tool">Why Not Just Use an Existing Tool</h2>
+<p>At this point the reasonable question is: this is exactly what tools and frameworks like Hugo, Jekyll, or Next.js are built for. Why spend the time writing your own?</p>
+<p>The short answer is that I was not treating this as a project to simply set up and move on from. I wanted to work through the entire process as a real engineering problem, from content parsing to HTML generation to automated deployment.</p>
+<p>The blog was not just the destination. The system underneath it was part of the project itself.</p>
+<p>Using an existing framework would have handled most of that for me, and in doing so, would have hidden exactly the parts I wanted to understand. When a framework processes a Markdown file and produces an HTML page, there are a dozen decisions buried in that process: how URLs are structured, how metadata is handled, how templates are rendered, how the deployment pipeline is wired together. A framework absorbs all of those decisions so you do not have to think about them. That is genuinely useful when the goal is to get a blog running quickly. It was not useful for what I was trying to do.</p>
+<p><strong>I wanted a system I could fully understand, maintain, and reason about myself.</strong> Building from scratch was the only way to get there.</p>
+<p>None of this is an argument against existing tools. If you want a blog and your goal is to write, then Hugo or Jekyll or any number of other options are genuinely good choices. Building from scratch has real costs. It took longer. It produced bugs I then had to fix myself. It continues to require maintenance that a battle-tested framework would handle automatically. Those are not small trade-offs.</p>
+<hr>
+<h2 id="where-the-complexity-ended-up">Where the Complexity Ended Up</h2>
+<p>There is one decision that shapes the entire architecture of this project, and it was worth naming directly.</p>
+<p><strong>All of the complexity should live in the build step, not at runtime.</strong></p>
+<p>The build script that processes posts and produces HTML files is not simple. It handles file discovery, content parsing, template injection, URL generation, table of contents extraction, sitemap production, and more. When something goes wrong, it surfaces during the build, not in front of a visitor.</p>
+<p>But once the build runs successfully, the site itself is as simple as possible. Just files. No server logic, no database, no external dependencies. That also made it possible to host the site for free on GitHub Pages, with GitHub Actions handling the build and deployment automatically on every push. For a personal blog, running and maintaining a dedicated server was never worth the cost or the overhead. The static approach made GitHub’s free tooling the natural fit from the start.</p>
+<p>The less infrastructure the site depended on, the more durable it felt. For a project I wanted to maintain for years, that ended up mattering more than I expected.</p>
+<p>Looking back, trading build complexity for runtime simplicity was the right call for this kind of project. A blog needs to be fast, reliable, and easy to reason about. All of that is easier to guarantee when there is almost nothing happening at runtime.</p>
+<hr>
+<h2 id="from-markdown-to-html-coming-next">From Markdown to HTML (Coming Next)</h2>
+<p>The decision to move to a build-time approach was one thing. Actually writing a system was another.</p>
+<p>The next article walks through the build pipeline in detail: what happens between writing a Markdown post and that post appearing at a URL. If you are an engineer who wants to understand the technical specifics, the <a href="https://github.com/by-hahn/blog/blob/main/docs/ARCHITECTURE.md" rel="noopener noreferrer">ARCHITECTURE.md</a> document in the GitHub repository covers the same ground in much more depth. For everyone else, the next part covers the same territory as a story rather than a spec.</p>
+</div>
+                </article>
+            </main>
+
+            <aside class="post-aside">
+                <div class="toc-wrap">
+                    <h4 class="toc-title">Contents</h4>
+                    <ul class="toc-list"><li><a href="#the-first-version-and-why-it-did-not-last" class="toc-link">The First Version, and Why It Did Not Last</a></li><li><a href="#three-problems-that-could-not-be-ignored" class="toc-link">Three Problems That Could Not Be Ignored</a></li><li><a href="#search-visibility" class="toc-link toc-sub">Search visibility</a></li><li><a href="#api-rate-limits" class="toc-link toc-sub">API rate limits</a></li><li><a href="#load-time" class="toc-link toc-sub">Load time</a></li><li><a href="#what-static-site-generation-actually-means" class="toc-link">What Static Site Generation Actually Means</a></li><li><a href="#why-not-just-use-an-existing-tool" class="toc-link">Why Not Just Use an Existing Tool</a></li><li><a href="#where-the-complexity-ended-up" class="toc-link">Where the Complexity Ended Up</a></li><li><a href="#from-markdown-to-html-coming-next" class="toc-link">From Markdown to HTML (Coming Next)</a></li></ul>
+                    <div class="toc-nav">
+                        <a href="/projects/" class="btn">← Projects</a>
+                        <a href="/" class="btn">← Home</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Menu (shown on screens <= 600px) -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <h2>Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">×</button>
+            </div>
+            <div class="mobile-menu-content">
+                <div class="card">
+                    <h4 style="margin:0 0 8px">About</h4>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
+                        Posts URL: /category/slug/</p>
+                </div>
+                <ul style="margin-top:16px;">
+                    <li><a href="/activities">Activities</a></li>
+                    <li><a href="/goals">Goals</a></li>
+                    <li><a href="/paper-reviews">Paper Reviews</a></li>
+                    <li><a href="/posts">Posts</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/study-notes">Study Notes</a></li>
+                    <li><a href="/guestbook">Guestbook</a></li>
+                    <li><a href="/certifications">Certifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="muted">
+                © 2025-2026 by-hahn · Research Notes & Achievements
+                <br>
+                Contact: seehahn@knu.ac.kr |
+                <a href="https://github.com/by-hahn" target="_blank">GitHub</a> |
+                <a href="https://www.instagram.com/by_hahn/" target="_blank">Instagram</a> |
+                <a href="https://www.linkedin.com/in/byoungyoon-hahn/" target="_blank">LinkedIn</a> |
+                <a href="https://by-hahn.com/" target="_blank">Portfolio</a> |
+                <a href="#" id="theme-toggle" aria-label="Toggle theme">🌙</a>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <!-- Mobile Navigation toggle -->
+    <script>
+        (function () {
+            const navToggle = document.getElementById('nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+            function toggleMobileMenu(open) {
+                if (open) {
+                    mobileMenu.classList.add('open');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (navToggle && mobileMenu && mobileMenuOverlay) {
+                navToggle.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.contains('open');
+                    toggleMobileMenu(!isOpen);
+                });
+            }
+
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+        })();
+    </script>
+
+    <!-- TOC Scroll Spy -->
+    <script>
+        (function () {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            if (!tocLinks.length) return;
+
+            const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+            const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
+            if (!headings.length) return;
+
+            let currentId = '';
+            let ticking = false;
+            const OFFSET = 40; // px from top to consider a heading "passed"
+
+            function setActive(id) {
+                if (id === currentId) return;
+                currentId = id;
+                tocLinks.forEach(link => {
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            function updateActiveHeading() {
+                ticking = false;
+
+                // At bottom of page → activate last heading
+                const scrollBottom = window.innerHeight + window.scrollY;
+                const docHeight = document.documentElement.scrollHeight;
+                if (docHeight - scrollBottom < 60) {
+                    setActive(headings[headings.length - 1].id);
+                    return;
+                }
+
+                // Find the last heading whose top has scrolled past OFFSET
+                let activeId = '';
+                for (let i = 0; i < headings.length; i++) {
+                    const rect = headings[i].getBoundingClientRect();
+                    if (rect.top <= OFFSET) {
+                        activeId = headings[i].id;
+                    } else {
+                        break;
+                    }
+                }
+
+                setActive(activeId || headings[0].id);
+            }
+
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(updateActiveHeading);
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            updateActiveHeading(); // initial state
+        })();
+    </script>
+</body>
+
+</html>

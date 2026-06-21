@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+
+    <meta name="description" content="This is the second article in Part 1 of the Automatic Control × AI series. The previous article, Part 1.1: AI Can Think. But Can It Act?, introduced the idea of feedback and why control systems exist. This article builds directly on that foundation." />
+  <link rel="canonical" href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-2/" />
+  <meta property="og:title" content="Modeling the Physical World: Control x AI Part 1.2" />
+  <meta property="og:description" content="This is the second article in Part 1 of the Automatic Control × AI series. The previous article, Part 1.1: AI Can Think. But Can It Act?, introduced the idea of feedback and why control systems exist. This article builds directly on that foundation." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-2/" />
+    <title>Part 1.2: The World as Equations</title>
+
+    <!-- CSS file served from dist/css/main.css on build -->
+    <link rel="stylesheet" href="/css/main.css">
+
+    <!-- Theme Toggle Script -->
+    <script src="/js/theme.js"></script>
+
+
+    <!-- Responsive Design Breakpoints:
+    - Desktop: > 900px (2-column layout with sidebar)
+    - Tablet: 600px - 900px (1-column layout, sidebar hidden)
+    - Mobile: <= 600px (1-column layout, mobile menu visible) -->
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1><a href="/" class="title">by-hahn — Blog</a></h1>
+                <p class="lead">Byoungyoon Hahn's Blog.</p>
+            </div>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">☰</button>
+        </header>
+
+        <nav id="nav-menu">
+            <a class="btn" href="/activities">Activities</a>
+            <a class="btn" href="/goals">Goals</a>
+            <a class="btn" href="/paper-reviews">Paper Reviews</a>
+            <a class="btn" href="/posts">Posts</a>
+            <a class="btn" href="/projects">Projects</a>
+            <a class="btn" href="/study-notes">Study Notes</a>
+            <a class="btn" href="/guestbook">Guestbook</a>
+            <a class="btn" href="/certifications">Certifications</a>
+        </nav>
+
+        <div class="grid grid-post">
+            <main>
+                <article class="card">
+                    <h1 style="margin-top:0">Part 1.2: The World as Equations</h1>
+                    <h2 style="margin-top: 0; margin-bottom: 12px; color: var(--text-secondary); font-weight: 500; font-size: 1.1rem;">Control x AI / Modeling the Physical World</h2>
+                    <div class="muted" style="margin-bottom: 16px;">2026-05-01 · 10 min</div>
+                    <!-- Mobile TOC (visible on tablet/mobile) -->
+                    <details class="mobile-toc"><summary>📑 Table of Contents</summary><ul class="toc-list"><li><a href="#why-models-come-first" class="toc-link">Why Models Come First</a></li><li><a href="#starting-simple-mass-spring-and-damper" class="toc-link">Starting Simple: Mass, Spring, and Damper</a></li><li><a href="#three-forces-at-work" class="toc-link toc-sub">Three Forces at Work</a></li><li><a href="#writing-it-as-a-differential-equation" class="toc-link toc-sub">Writing It as a Differential Equation</a></li><li><a href="#the-surprising-part" class="toc-link">The Surprising Part</a></li><li><a href="#from-differential-equations-to-transfer-functions" class="toc-link">From Differential Equations to Transfer Functions</a></li><li><a href="#the-laplace-transform" class="toc-link toc-sub">The Laplace Transform</a></li><li><a href="#the-transfer-function" class="toc-link toc-sub">The Transfer Function</a></li><li><a href="#the-ai-connection-building-worlds-from-equations" class="toc-link">The AI Connection: Building Worlds from Equations</a></li><li><a href="#physics-informed-neural-networks" class="toc-link toc-sub">Physics-Informed Neural Networks</a></li><li><a href="#one-model-many-systems" class="toc-link">One Model, Many Systems</a></li><li><a href="#what-comes-next" class="toc-link">What Comes Next</a></li></ul></details>
+                    <div class="post-body"><p><em>This is the second article in Part 1 of the Automatic Control × AI series. The previous article, <a href="https://blog.by-hahn.com/posts/control-x-ai-series-part-1-1" rel="noopener noreferrer">Part 1.1: AI Can Think. But Can It Act?</a>, introduced the idea of feedback and why control systems exist. This article builds directly on that foundation.</em></p>
+<hr>
+<p>Before a robotics company deploys a new robotic arm, it almost never tests directly on the physical hardware first. The arm is trained, tuned, and evaluated inside a simulation. Thousands of hours of movement happen in a virtual environment, against virtual objects, with virtual physics. The physical hardware only enters the picture after the system has proven itself inside that simulated world.</p>
+<p>That might seem like a practical workaround, but it is actually pointing at something more fundamental.</p>
+<p>A simulation is not a recording of reality. It is a mathematical description of how things move, push back, and respond to force. The physical world is replaced by equations, and those equations have to be good enough that behavior in the virtual environment transfers to behavior in the real one.</p>
+<p>This process, turning a physical system into a mathematical model, is the foundation of control theory. And it turns out that without it, neither AI nor control can do very much at all.</p>
+<hr>
+<h2 id="why-models-come-first">Why Models Come First</h2>
+<p>At the end of the previous article, I mentioned that physical systems which seem unrelated often end up looking surprisingly similar once you model them mathematically. That observation deserves some unpacking, because it is not obvious why that would be true.</p>
+<p>When we want to control a system, whether it is a robot joint, a temperature regulator, or a vehicle, we need to be able to predict how it will respond. If I apply a certain force, how far does it move? If I increase a voltage, how does the current change? If I turn on a heater, how quickly does the temperature rise?</p>
+<p>Without a model, control becomes guesswork. You adjust something, observe what happens, and hope for the best. That might work for simple tasks in predictable environments, but it falls apart quickly once the system becomes more complex or the environment becomes less forgiving.</p>
+<p>A mathematical model lets us do something much more useful. We can predict a system’s behavior, test a controller against it, and identify problems without any risk of breaking expensive hardware or, in more critical applications, harming anyone.</p>
+<p>That is exactly what simulation environments in robotics are doing. The model is not an approximation we tolerate because hardware is inconvenient. It is a fundamental tool for thinking about how a system works.</p>
+<hr>
+<h2 id="starting-simple-mass-spring-and-damper">Starting Simple: Mass, Spring, and Damper</h2>
+<p>The most common introductory model in control theory is the <strong>mass-spring-damper system</strong>, and for good reason. It is physically intuitive, mathematically clean, and it captures the core dynamics that appear in a surprising number of real systems.</p>
+<h3 id="three-forces-at-work">Three Forces at Work</h3>
+<p>Picture a block sitting on a frictionless surface. The block is attached to a wall by a spring, and also to a damper, which you can think of as a shock absorber. When you push the block, three forces come into play.</p>
+<p>First, the spring pulls back. The further you push, the harder it resists. This is the restoring force, and its strength depends on the <strong>spring constant</strong>, which tells you how stiff the spring is.</p>
+<p>Second, the damper resists motion. The faster the block moves, the harder the damper pushes back. This is the resistive force, and its strength depends on the <strong>damping coefficient</strong>, which tells you how much the system resists rapid movement.</p>
+<p>Third, there is the block itself. Mass resists changes in velocity. To accelerate a heavier object, you need more force.</p>
+<h3 id="writing-it-as-a-differential-equation">Writing It as a Differential Equation</h3>
+<p>Put these three together, and you get a relationship between the force you apply and the position of the block over time. Written as a differential equation, the core relationship looks like this:</p>
+<p>$
+m\ddot{x}(t) + c\dot{x}(t) + kx(t) = F(t)
+$</p>
+<p>Where $m$ is mass, $c$ is the damping coefficient, $k$ is the spring constant, $x(t)$ is the position of the block at time $t$, and $F(t)$ is the force you are applying.</p>
+<p>The dot notation, $\dot{x}$ and $\ddot{x}$, represents rates of change. $\dot{x}$ is velocity, which is how quickly position is changing. $\ddot{x}$ is acceleration, which is how quickly velocity is changing. Newton’s second law, F equals ma, is hiding inside that equation.</p>
+<p><strong>The differential equation above</strong> says that the total force acting on the block at any given moment is the sum of the force from mass resisting acceleration, the force from the damper resisting velocity, and the force from the spring pulling it back toward the center.</p>
+<p>That is the model. A set of equations that describes how the system evolves over time.</p>
+<hr>
+<h2 id="the-surprising-part">The Surprising Part</h2>
+<p>Consider an electrical circuit with a resistor, an inductor, and a capacitor connected in series. This kind of circuit is known as an <strong>RLC circuit</strong>, short for resistor-inductor-capacitor. When you apply a voltage to this circuit, the electrical behavior of the system can be described by tracking the charge accumulated on the capacitor over time. That relationship follows this equation:</p>
+<p>$
+L\ddot{q}(t) + R\dot{q}(t) + \frac{1}{C}q(t) = V(t)
+$</p>
+<p>Where <code>L</code> is inductance, <code>R</code> is resistance, <code>C</code> is capacitance, <code>q(t)</code> is the electric charge accumulated on the capacitor at time $t$, and <code>V(t)</code> is the applied voltage.</p>
+<p>Look at the two equations side by side.</p>
+<p>$
+\begin{aligned}
+m\ddot{x} + c\dot{x} + kx &amp;= F(t) \quad \text{[mechanical]} \
+L\ddot{q} + R\dot{q} + \tfrac{1}{C}q &amp;= V(t) \quad \text{[electrical]}
+\end{aligned}
+$</p>
+<p>The structure is identical. At first glance, these two systems do not feel related at all. One involves physical motion, springs, and dampers. The other involves current, voltage, and electrical components. But mathematically, they behave like the same system wearing different physical forms. The symbols are different, and the physical meaning of each term is different, but the mathematical form is the same. A second-order linear differential equation with three terms on the left and a driving input on the right.</p>
+<p>Mass corresponds to inductance. Damping corresponds to resistance. Spring stiffness corresponds to the inverse of capacitance. Force corresponds to voltage.</p>
+<p>This is why models matter so much in control theory. Once you recognize that a mechanical system and an electrical system share the same mathematical structure, everything you learn about one applies directly to the other. A control technique developed for an electrical circuit works on a robot joint that follows the same equations, because the equations do not care about what is physically happening. They only care about the structure of the dynamics.</p>
+<p>This abstraction is part of what makes control theory so general.</p>
+<hr>
+<h2 id="from-differential-equations-to-transfer-functions">From Differential Equations to Transfer Functions</h2>
+<p>Differential equations are precise, but they are not always the most convenient way to think about a system. Especially when you want to understand how a system responds to different kinds of inputs, or how a controller will change its behavior.</p>
+<h3 id="the-laplace-transform">The Laplace Transform</h3>
+<p>Engineers use a mathematical tool called the <strong>Laplace transform</strong> to convert differential equations into a more workable form. I will not go deep into the mechanics of the Laplace transform here, because the intuition is more important than the derivation. The key idea is straightforward. In the transformed domain, which engineers call the <strong>s-domain</strong>, differential equations become ordinary algebraic equations. That shift matters because algebraic equations are far easier to manipulate than differential ones. Instead of solving for how a signal evolves step by step through time, you can reason about the system’s overall behavior using straightforward algebra.</p>
+<p>The variable $s$ itself is a complex number, and that turns out to be useful. The real part of $s$ captures whether a signal is growing or decaying over time, and the imaginary part captures oscillation. A system that rings like a bell and gradually settles has both of those things happening at once, and $s$ encodes them together in a single symbol.</p>
+<h3 id="the-transfer-function">The Transfer Function</h3>
+<p>The result of applying this transform to a system’s differential equation is called the <strong>transfer function</strong>.</p>
+<p>A transfer function describes the relationship between a system’s input and its output in a compact, symbolic form. For the mass-spring-damper system, the transfer function from applied force to position takes this form.</p>
+<p>$
+G(s) = \frac{X(s)}{F(s)} = \frac{1}{ms^2 + cs + k}
+$</p>
+<p>Where $X(s)$ is the Laplace transform of the position and $F(s)$ is the Laplace transform of the applied force. This assumes the system starts from rest, which is the standard convention when first analyzing a system’s behavior.</p>
+<p>The transfer function $G(s)$ is essentially a shorthand for asking: if I give this system an input signal, how does it transform that signal into an output? A system with a high spring constant and heavy damping will respond very differently to the same force compared to a light, loosely damped system. The transfer function captures that difference in a single expression.</p>
+<p>Once we have a transfer function, system analysis becomes dramatically easier. Instead of solving differential equations repeatedly from scratch, we can reason about behavior using algebraic tools. Stability, response speed, oscillation, and controller design all become much more approachable in this form.</p>
+<p>The concepts covered in the rest of this series, stability, response characteristics, frequency behavior, and controller design, all build on this foundation.</p>
+<hr>
+<h2 id="the-ai-connection-building-worlds-from-equations">The AI Connection: Building Worlds from Equations</h2>
+<p>When I first started thinking about simulation environments in the context of AI, I thought of them primarily as engineering conveniences. Simulation is faster than hardware, cheaper, and safer.</p>
+<p>But looking at it through the lens of modeling, I started to see something deeper.</p>
+<p>Platforms like MuJoCo and Isaac Sim, widely used for training robotic systems, are essentially physics engines. They simulate the dynamics of rigid bodies, joints, friction, contact forces, and gravity by numerically solving differential equations of exactly the kind described above. When a robotic arm learns to reach a target in simulation, it is interacting with a mathematical model of how mass, force, and motion relate to each other.</p>
+<p>The model is the world. And the quality of the model determines whether anything learned in simulation transfers to reality. This problem even has a name in the robotics community. It is called <strong>sim-to-real transfer</strong>, and it refers to the challenge of bridging the gap between a simulated model and the real physical system it represents.</p>
+<p>A well-modeled simulation earns its claims. Joints resist at the right angles, mass distributes realistically, contact forces push back as expected. When the model is off, those errors quietly slip through, and what looked reliable on screen starts falling apart the instant it meets the actual hardware.</p>
+<p>This is another version of the same problem control engineers have always dealt with. The model is never perfectly accurate, and the mismatch between model and reality is something that both classical control design and modern AI training have to account for in different ways.</p>
+<h3 id="physics-informed-neural-networks">Physics-Informed Neural Networks</h3>
+<p>There is also a newer and more direct connection. A growing body of research uses physical models not just as simulation environments but as ingredients inside learning itself. <strong>Physics-informed neural networks</strong>, for example, incorporate known physical equations as constraints or regularizers during training. Instead of asking a neural network to learn physical behavior entirely from data, you embed what you already know from modeling, equations like the ones above, directly into the learning process.</p>
+<p>The idea is that physical laws are not things the model should have to rediscover from scratch. They are prior knowledge. And encoding them properly can make learning faster, more data-efficient, and more likely to generalize.</p>
+<p>This connection between mathematical models and learning algorithms is something I expect to keep coming back to throughout this series.</p>
+<hr>
+<h2 id="one-model-many-systems">One Model, Many Systems</h2>
+<p>Once you start recognizing these structures, the world begins to look slightly different. Systems that once seemed unrelated start collapsing into the same mathematical patterns.</p>
+<p>I want to end on the observation that I find most striking about modeling.</p>
+<p>The mass-spring-damper structure appears everywhere. Suspension systems in cars. Human joints under load. Atomic bonds vibrating at the molecular scale. The same RLC structure describes audio filters, antenna circuits, and power regulators. Different physical phenomena, same underlying form.</p>
+<p>This is not a coincidence. It reflects something about the nature of physical systems: many of them involve competing forces, inertia, and dissipation in some combination. Once you recognize that pattern in one place, you start seeing it everywhere else.</p>
+<p>For a control engineer, this is useful because it means that a technique that works for one class of systems likely works for another. For an AI researcher, it suggests that learning a good model in one physical domain might transfer to others more readily than it first appears.</p>
+<p>Underneath the springs and circuits and atomic bonds, the same pattern keeps appearing. The mathematics does not distinguish between them. It just describes the shape of the dynamics, wherever they happen to occur.</p>
+<hr>
+<h2 id="what-comes-next">What Comes Next</h2>
+<p>Now that we have a way to model a system, a natural question follows immediately.</p>
+<p>How does that system actually behave? Not just in theory, but in terms of what you would observe watching it respond to an input. Does it overshoot? Does it settle slowly? Does it oscillate before coming to rest?</p>
+<p>These are questions about system response, and they turn out to be just as important as the model itself. Because a system that is modeled correctly but behaves undesirably is still a system you cannot rely on.</p>
+<p>That is what the next article will explore.</p>
+</div>
+                </article>
+            </main>
+
+            <aside class="post-aside">
+                <div class="toc-wrap">
+                    <h4 class="toc-title">Contents</h4>
+                    <ul class="toc-list"><li><a href="#why-models-come-first" class="toc-link">Why Models Come First</a></li><li><a href="#starting-simple-mass-spring-and-damper" class="toc-link">Starting Simple: Mass, Spring, and Damper</a></li><li><a href="#three-forces-at-work" class="toc-link toc-sub">Three Forces at Work</a></li><li><a href="#writing-it-as-a-differential-equation" class="toc-link toc-sub">Writing It as a Differential Equation</a></li><li><a href="#the-surprising-part" class="toc-link">The Surprising Part</a></li><li><a href="#from-differential-equations-to-transfer-functions" class="toc-link">From Differential Equations to Transfer Functions</a></li><li><a href="#the-laplace-transform" class="toc-link toc-sub">The Laplace Transform</a></li><li><a href="#the-transfer-function" class="toc-link toc-sub">The Transfer Function</a></li><li><a href="#the-ai-connection-building-worlds-from-equations" class="toc-link">The AI Connection: Building Worlds from Equations</a></li><li><a href="#physics-informed-neural-networks" class="toc-link toc-sub">Physics-Informed Neural Networks</a></li><li><a href="#one-model-many-systems" class="toc-link">One Model, Many Systems</a></li><li><a href="#what-comes-next" class="toc-link">What Comes Next</a></li></ul>
+                    <div class="toc-nav">
+                        <a href="/posts/" class="btn">← Posts</a>
+                        <a href="/" class="btn">← Home</a>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Mobile Menu (shown on screens <= 600px) -->
+        <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-menu-header">
+                <h2>Menu</h2>
+                <button class="mobile-menu-close" id="mobile-menu-close" aria-label="Close menu">×</button>
+            </div>
+            <div class="mobile-menu-content">
+                <div class="card">
+                    <h4 style="margin:0 0 8px">About</h4>
+                    <p class="muted">About Hahn, Byoungyoon</p>
+                    <p class="muted">Custom SSG. Challenge to make a better structure than Jekyll using Github Actions.
+                        Posts URL: /category/slug/</p>
+                </div>
+                <ul style="margin-top:16px;">
+                    <li><a href="/activities">Activities</a></li>
+                    <li><a href="/goals">Goals</a></li>
+                    <li><a href="/paper-reviews">Paper Reviews</a></li>
+                    <li><a href="/posts">Posts</a></li>
+                    <li><a href="/projects">Projects</a></li>
+                    <li><a href="/study-notes">Study Notes</a></li>
+                    <li><a href="/guestbook">Guestbook</a></li>
+                    <li><a href="/certifications">Certifications</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <div class="muted">
+                © 2025-2026 by-hahn · Research Notes & Achievements
+                <br>
+                Contact: seehahn@knu.ac.kr |
+                <a href="https://github.com/by-hahn" target="_blank">GitHub</a> |
+                <a href="https://www.instagram.com/by_hahn/" target="_blank">Instagram</a> |
+                <a href="https://www.linkedin.com/in/byoungyoon-hahn/" target="_blank">LinkedIn</a> |
+                <a href="https://by-hahn.com/" target="_blank">Portfolio</a> |
+                <a href="#" id="theme-toggle" aria-label="Toggle theme">🌙</a>
+            </div>
+        </footer>
+    </div>
+
+
+
+    <!-- Mobile Navigation toggle -->
+    <script>
+        (function () {
+            const navToggle = document.getElementById('nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+            const mobileMenuClose = document.getElementById('mobile-menu-close');
+
+            function toggleMobileMenu(open) {
+                if (open) {
+                    mobileMenu.classList.add('open');
+                    mobileMenuOverlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    mobileMenu.classList.remove('open');
+                    mobileMenuOverlay.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+
+            if (navToggle && mobileMenu && mobileMenuOverlay) {
+                navToggle.addEventListener('click', () => {
+                    const isOpen = mobileMenu.classList.contains('open');
+                    toggleMobileMenu(!isOpen);
+                });
+            }
+
+            if (mobileMenuClose) {
+                mobileMenuClose.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+
+            if (mobileMenuOverlay) {
+                mobileMenuOverlay.addEventListener('click', () => {
+                    toggleMobileMenu(false);
+                });
+            }
+        })();
+    </script>
+
+    <!-- TOC Scroll Spy -->
+    <script>
+        (function () {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            if (!tocLinks.length) return;
+
+            const headingIds = Array.from(tocLinks).map(a => a.getAttribute('href').slice(1));
+            const headings = headingIds.map(id => document.getElementById(id)).filter(Boolean);
+            if (!headings.length) return;
+
+            let currentId = '';
+            let ticking = false;
+            const OFFSET = 40; // px from top to consider a heading "passed"
+
+            function setActive(id) {
+                if (id === currentId) return;
+                currentId = id;
+                tocLinks.forEach(link => {
+                    if (link.getAttribute('href') === '#' + id) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            function updateActiveHeading() {
+                ticking = false;
+
+                // At bottom of page → activate last heading
+                const scrollBottom = window.innerHeight + window.scrollY;
+                const docHeight = document.documentElement.scrollHeight;
+                if (docHeight - scrollBottom < 60) {
+                    setActive(headings[headings.length - 1].id);
+                    return;
+                }
+
+                // Find the last heading whose top has scrolled past OFFSET
+                let activeId = '';
+                for (let i = 0; i < headings.length; i++) {
+                    const rect = headings[i].getBoundingClientRect();
+                    if (rect.top <= OFFSET) {
+                        activeId = headings[i].id;
+                    } else {
+                        break;
+                    }
+                }
+
+                setActive(activeId || headings[0].id);
+            }
+
+            function onScroll() {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(updateActiveHeading);
+                }
+            }
+
+            window.addEventListener('scroll', onScroll, { passive: true });
+            updateActiveHeading(); // initial state
+        })();
+    </script>
+</body>
+
+</html>
