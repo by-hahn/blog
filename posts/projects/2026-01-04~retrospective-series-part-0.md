@@ -1,6 +1,10 @@
 ---
 title: "Blog Development Plan & Retrospective Series"
 subtitle: "Retrospective Series Part. 0"
+series:
+  id: "blog-retrospective-series"
+  part: 0
+  article: 1
 tags: ["blog", "ssg", "retrospective"]
 featured: true
 og_title: "Blog Development Plan & Retrospective Series"
@@ -133,6 +137,24 @@ the technical side of this project:
 
 Each post will focus on real decisions, trade-offs, and mistakes.
 Not just the final result.
+
+---
+
+### Update, Apr 2026
+
+A few things have changed since this post was originally written.
+
+Most of the engineering-heavy parts now live directly in the GitHub repository
+([`ARCHITECTURE.md`](https://github.com/by-hahn/blog/blob/main/docs/ARCHITECTURE.md), [`BUILD_PIPELINE.md`](https://github.com/by-hahn/blog/blob/main/docs/BUILD_PIPELINE.md), [`BUG_LOG.md`](https://github.com/by-hahn/blog/blob/main/docs/BUG_LOG.md), etc.).
+
+Originally, I wanted this retrospective series to sit somewhere between engineering
+documentation and personal writing. 
+But as the project grew, it became clear that the technical side needed its own proper documentation. 
+At the same time, I still wanted the series to stay approachable for readers who may not come from an engineering background.
+
+Because of that, the series itself was trimmed from five parts to four.
+
+I think that change ultimately lets the series focus more on the story behind the project.
 
 ---
 
